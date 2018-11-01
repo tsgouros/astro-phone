@@ -1,0 +1,39 @@
+{
+  "name": "astro-phone",
+  "version": "0.0.1",
+  "description": "Display of 3D astronomy data with A-Frame",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "webpack --progress",
+    "watch": "webpack --progress --watch",
+    "server": "webpack-dev-server --open"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git@github.com/tsgouros/astro-phone.git"
+  },
+  "keywords": [
+    "astronomy",
+    "phone",
+    "VR",
+    "webvr"
+  ],
+  "author": "Tom Sgouros",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/tsgouros/astro-phone/issues"
+  },
+  "homepage": "https://github.com/tsgouros/astro-phone#readme",
+  "dependencies": {
+    "aframe": "^0.8.2"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.1.2",
+    "@babel/preset-env": "^7.1.0",
+    "babel-loader": "^8.0.4",
+    "webpack": "^4.20.2",
+    "webpack-cli": "^3.1.2",
+    "webpack-dev-server": "^3.1.9"
+  }
+}

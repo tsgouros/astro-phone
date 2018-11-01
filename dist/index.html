@@ -1,14 +1,13 @@
 <html>
   <head>
   <title>My A-Frame Scene</title>
-  <script src="https://aframe.io/releases/0.8.0/aframe.min.js"></script>
-  <script src="js/astro.js"></script>
+  <script src="dist/main.js"></script>
   </head>
   <body>
     <a-scene background="color: #aaf">
       <a-assets>
-        <a-asset-item id="fekcorr" src="fekcorr-filt-nomtl.gltf"></a-asset-item>
-        <a-asset-item id="cco" src="cco-filt.gltf"></a-asset-item>
+        <a-asset-item id="fekcorr" src="data/fekcorr-filt-nomtl.gltf"></a-asset-item>
+        <a-asset-item id="cco" src="data/cco-filt.gltf"></a-asset-item>
       </a-assets>
       <a-entity gltf-model="#fekcorr">
         <a-animation attribute="model-r"

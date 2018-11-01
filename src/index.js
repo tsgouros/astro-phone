@@ -1,3 +1,4 @@
+import AFRAME from 'aframe';
 
 AFRAME.registerComponent('model-r', {
   schema: {default: 1.0},

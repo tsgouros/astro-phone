@@ -34,6 +34,10 @@
 *~
 
 node_modules
-ams102.js*
-public
-*.pyc
+CasA.js
+dist/CasA.js
+ins.sh
+*trash*
+
+# Remove this before publishing, so others can use the repo verbatim.
+package-lock.json
