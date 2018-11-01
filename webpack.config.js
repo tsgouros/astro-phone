@@ -6,7 +6,7 @@ module.exports = {
   mode: 'development',
   output: {
     filename: 'CasA.js',
-    path: path.resolve(__dirname, 'dist')
+    path: path.resolve(__dirname, 'CasA')
   },
   module: {
     rules: [
@@ -25,7 +25,7 @@ module.exports = {
   plugins: [
     new HtmlWebpackPlugin({
       title: "CasA App",
-      filename: './dist/index.html'
+      filename: 'index.html'
     }),
   ]
 
