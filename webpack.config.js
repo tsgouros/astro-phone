@@ -1,9 +1,12 @@
+var path = require('path');
+var HtmlWebpackPlugin = require('html-webpack-plugin');
+
 module.exports = {
   entry: './src/index.js',
   mode: 'development',
   output: {
     filename: 'CasA.js',
-    path: 'dist'
+    path: path.resolve(__dirname, 'dist')
   },
   module: {
     rules: [
@@ -18,5 +21,12 @@ module.exports = {
         }
       }
     ]
-  }
+  },
+  plugins: [
+    new HtmlWebpackPlugin({
+      title: "CasA App",
+      filename: './dist/index.html'
+    }),
+  ]
+
 };
