@@ -35,7 +35,8 @@
 
 node_modules
 CasA.js
-dist/CasA.js
+CasA/CasA.js
+CasA/data
 ins.sh
 *trash*
 

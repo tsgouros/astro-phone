@@ -1,5 +1,5 @@
 var path = require('path');
-var HtmlWebpackPlugin = require('html-webpack-plugin');
+const CopyWebpackPlugin = require('copy-webpack-plugin')
 
 module.exports = {
   entry: './src/index.js',
@@ -23,10 +23,10 @@ module.exports = {
     ]
   },
   plugins: [
-    new HtmlWebpackPlugin({
-      title: "CasA App",
-      filename: 'index.html'
-    }),
+    new CopyWebpackPlugin(
+      [
+        { from: 'data/*.gltf' }
+      ]
+    )
   ]
-
 };

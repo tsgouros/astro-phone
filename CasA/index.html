@@ -5,5 +5,31 @@
     <title>CasA App</title>
   </head>
   <body>
-  <script type="text/javascript" src="CasA.js"></script></body>
+    <script type="text/javascript" src="CasA.js"></script>
+    <a-scene background="color: #aaf">
+      <a-assets>
+        <a-asset-item id="fekcorr" src="data/fekcorr-filt-nomtl.gltf">
+        </a-asset-item>
+        <a-asset-item id="cco" src="data/cco-filt.gltf">
+        </a-asset-item>
+      </a-assets>
+      <a-entity gltf-model="#fekcorr">
+        <a-animation attribute="model-r"
+                     dur="10000"
+                     from="1"
+                     to="0"
+                     repeat="indefinite"></a-animation>
+      </a-entity>
+      <a-entity gltf-model="#cco">
+        <a-animation attribute="model-r"
+                     dur="5000"
+                     from="0"
+                     to="1"
+                     repeat="indefinite"></a-animation>
+      </a-entity>
+      <a-camera>
+        <a-cursor></a-cursor>
+      </a-camera>
+    </a-scene>
+  </body>
 </html>
