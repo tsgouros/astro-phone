@@ -3,33 +3,92 @@
   <head>
     <meta charset="UTF-8">
     <title>CasA App</title>
+    <script src="https://aframe.io/releases/0.8.2/aframe.min.js"></script>
+    <script src="//cdn.rawgit.com/donmccurdy/aframe-extras/v4.2.0/dist/aframe-extras.min.js"></script>
+    <script src="https://unpkg.com/aframe-curve-component/dist/aframe-curve-component.min.js"></script>
+    <script src="https://rawgit.com/protyze/aframe-alongpath-component/master/dist/aframe-alongpath-component.min.js"></script>
+    <script type="text/javascript" src="index.js"></script>
   </head>
   <body>
-    <script type="text/javascript" src="CasA.js"></script>
     <a-scene background="color: #aaf">
       <a-assets>
         <a-asset-item id="fekcorr" src="data/fekcorr-filt-nomtl.gltf">
         </a-asset-item>
         <a-asset-item id="cco" src="data/cco-filt.gltf">
         </a-asset-item>
+        <a-asset-item id="ar" src="data/newar-filt.gltf">
+        </a-asset-item>
+        <a-asset-item id="hetg" src="data/newhetg.gltf">
+        </a-asset-item>
+        <a-asset-item id="jets" src="data/newjets.gltf">
+        </a-asset-item>
+        <a-asset-item id="opt" src="data/newopt.gltf">
+        </a-asset-item>
+        <a-asset-item id="si" src="data/newsi-filt.gltf">
+        </a-asset-item>
       </a-assets>
+
+      <a-curve id="track1">
+        <a-curve-point position="-1 1 -3"></a-curve-point>
+        <a-curve-point position="1 1 -3"></a-curve-point>
+        <a-curve-point position="0 0 0"></a-curve-point>
+      </a-curve>
+    
+      <a-curve id="track2">
+        <a-curve-point position="0 0 0"></a-curve-point>
+        <a-curve-point position="-1 -1 -3"></a-curve-point>
+        <a-curve-point position="1 -20 -3"></a-curve-point>
+      </a-curve>
+    
+      <!-- Draw the Curve -->
+      <a-draw-curve curveref="#track1" material="color: blue;"></a-draw-curve>
+<!--      <a-box alongpath="curve: #track1; rotate: true; loop: true; --
+  --      dur: 5000;"></a-box> -->
+      
       <a-entity gltf-model="#fekcorr">
         <a-animation attribute="model-r"
-                     dur="10000"
+                     dur="1000"
                      from="1"
                      to="0"
-                     repeat="indefinite"></a-animation>
+                     repeat="5"></a-animation>
       </a-entity>
       <a-entity gltf-model="#cco">
-        <a-animation attribute="model-r"
-                     dur="5000"
-                     from="0"
-                     to="1"
-                     repeat="indefinite"></a-animation>
       </a-entity>
-      <a-camera>
-        <a-cursor></a-cursor>
-      </a-camera>
+      <a-entity gltf-model="#ar">
+        <a-animation attribute="model-r"
+                     dur="2000"
+                     from="1"
+                     to="0"
+                     repeat="5"></a-animation>
+      </a-entity>
+      <a-entity gltf-model="#hetg">
+      </a-entity>
+      <a-entity gltf-model="#jets">
+      </a-entity>
+      <a-entity gltf-model="#opt">
+      </a-entity>
+      <a-entity gltf-model="#si" gltf-color="0.1 0.5 0.9">
+      </a-entity>
+      <a-entity camera alongpathevent
+                id="mainCamera"
+                position="0 1.6 0"
+                look-controls="pointerLockEnabled: true"
+                alongpath="curve: #track1; loop: false; dur: 5000">
+
+<!--        <a-animation attribute="position"
+                     dur="10000"
+                     from="3 1.6 0"
+                     to="1 0.3 0"
+                     direction="alternate"
+                     repeat="3"></a-animation>
+   -->     
+        <a-entity cursor
+                  position="0 0 -1"
+                  geometry="primitive: ring; radiusInner: 0.02; radiusOuter: 0.03;"
+                  material="color: #CCC; shader: flat;"></a-entity>
+      </a-entity>
+
+      <a-grid id="ground" material="src:../grid-cell.png; opacity:0.9" geometry:"primitive: sphere"></a-grid>
     </a-scene>
   </body>
 </html>
