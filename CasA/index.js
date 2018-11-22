@@ -27,38 +27,56 @@ AFRAME.registerComponent('gltf-color', {
   schema: {default: {r: 0.5, g: 0.5, b: 0.6}},
   init: function() {
     console.log("This is this:", this);
-    console.log("gltf-color1:", this.data.split(" ").map(Number));
-    
+
+    // Retrieve colors. If they are specified with the gltf-color attribute,
+    // they arrive here as a string such as '0.1 0.2 0.3'. Otherwise, they arrive
+    // as the default value specifed in the schema attribute above.
+    var colors;
+    if (typeof(this.data) == 'string') {
+      var colorArray = this.data.split(" ").map(Number);
+      colors = {r: colorArray[0], g: colorArray[1], b: colorArray[2] };
+    } else {
+      colors = this.data;
+    }
+
+    // Listen for the model-loaded event, then adjust the color of the object. 
     this.el.addEventListener('model-loaded', function(event) {
-      console.log("no, this is this:", this, event);
+      console.log("no, this is this:", this.data, event);
       var mesh = event.target.getObject3D('mesh');
       if (!mesh) { console.log("********* oops, no mesh"); return; }
-      //var colorArray = this.data.split(" ").map(Number);
       mesh.traverse(function(node) {
         if (node.isMesh) {
-          node.material.color = {r: 0.1, //colorArray[0],
-                                 g: 0.5, //colorArray[1],
-                                 b: 0.8}; //colorArray[2]};
+          node.material.color = colors;
           node.material.transparent = true;
           node.material.needsUpdate = true;
         }
       });
     });
   },
-  setColor: function(mesh, color) {
-    // Accepts an object (mesh) and a string with three numbers (0-1)
-    // in it, and sets the color of the given asset accordingly.
-    var colorArray = d.split(" ").map(Number);
-    mesh.traverse(function(node) {
-      if (node.isMesh) {
-        node.material.color = {r: colorArray[0],
-                               g: colorArray[1],
-                               b: colorArray[2]},
-        node.material.transparent = true;
-        node.material.needsUpdate = true;
-      }
-    });
-  }
+  // update: function() {
+  //   // Accepts an object (mesh) and a string with three numbers (0-1)
+  //   // in it, and sets the color of the given asset accordingly.
+
+  //   // NE MARCHE PAS
+    
+  //   console.log("update says this is this:", this);
+  //   var colors;
+  //   if (typeof(this.data) == 'string') {
+  //     var colorArray = this.data.split(" ").map(Number);
+  //     colors = {r: colorArray[0], g: colorArray[1], b: colorArray[2] };
+  //   } else {
+  //     colors = this.data;
+  //   }
+
+  //   mesh = this.el.getObject3D('mesh');
+  //   mesh.traverse(function(node) {
+  //     if (node.isMesh) {
+  //       node.material.color = colors;
+  //       node.material.transparent = true;
+  //       node.material.needsUpdate = true;
+  //     }
+  //   });
+  // }
 });
                             
 
