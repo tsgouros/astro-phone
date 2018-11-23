@@ -23,60 +23,54 @@ AFRAME.registerComponent('model-r', {
    javascript way to parseFloat() an array of strings into an array of floats,
    look into it. */
 
+setMeshColor = function(mesh, colorData) {
+  // Accepts a mesh and a color.  Checks to see if the mesh is really a mesh.
+  // The color can be specified as a string (e.g. "0.3 0.2 0.1") or as an
+  // array (e.g. [0.3,0.2,0.1]) or an object (e.g. {r: 0.3, g: 0.2, b: 0.1})
+
+  var colors;
+  if (typeof(colorData) == 'string') {
+    var colorArray = this.data.split(" ").map(Number);
+    colors = {r: colorArray[0], g: colorArray[1], b: colorArray[2] };
+  } else if (Array.isArray(colorData)) {
+    colors = {r: colorData[0], g: colorData[1], b: colorData[2] };
+  } else {
+    colors = colorData;
+  }
+  
+  if (!mesh) { console.log("********* oops, no mesh"); return; }
+
+  mesh.traverse(function(node) {
+    if (node.isMesh) {
+      node.material.color = colors;
+      node.material.transparent = true;
+      node.material.needsUpdate = true;
+    }
+  });
+};               
+
+
 AFRAME.registerComponent('gltf-color', {
   schema: {default: {r: 0.5, g: 0.5, b: 0.6}},
   init: function() {
-    console.log("This is this:", this);
 
     // Retrieve colors. If they are specified with the gltf-color attribute,
     // they arrive here as a string such as '0.1 0.2 0.3'. Otherwise, they arrive
     // as the default value specifed in the schema attribute above.
-    var colors;
-    if (typeof(this.data) == 'string') {
-      var colorArray = this.data.split(" ").map(Number);
-      colors = {r: colorArray[0], g: colorArray[1], b: colorArray[2] };
-    } else {
-      colors = this.data;
-    }
+    var colorData = this.data;
 
     // Listen for the model-loaded event, then adjust the color of the object. 
     this.el.addEventListener('model-loaded', function(event) {
-      console.log("no, this is this:", this.data, event);
-      var mesh = event.target.getObject3D('mesh');
-      if (!mesh) { console.log("********* oops, no mesh"); return; }
-      mesh.traverse(function(node) {
-        if (node.isMesh) {
-          node.material.color = colors;
-          node.material.transparent = true;
-          node.material.needsUpdate = true;
-        }
-      });
+      setMeshColor(event.target.getObject3D('mesh'), colorData);
     });
   },
-  // update: function() {
-  //   // Accepts an object (mesh) and a string with three numbers (0-1)
-  //   // in it, and sets the color of the given asset accordingly.
+  update: function() {
+    // Accepts an object (mesh) and a string with three numbers (0-1)
+    // in it, and sets the color of the given asset accordingly.
 
-  //   // NE MARCHE PAS
-    
-  //   console.log("update says this is this:", this);
-  //   var colors;
-  //   if (typeof(this.data) == 'string') {
-  //     var colorArray = this.data.split(" ").map(Number);
-  //     colors = {r: colorArray[0], g: colorArray[1], b: colorArray[2] };
-  //   } else {
-  //     colors = this.data;
-  //   }
-
-  //   mesh = this.el.getObject3D('mesh');
-  //   mesh.traverse(function(node) {
-  //     if (node.isMesh) {
-  //       node.material.color = colors;
-  //       node.material.transparent = true;
-  //       node.material.needsUpdate = true;
-  //     }
-  //   });
-  // }
+    var colorData = this.data;
+    setMeshColor(this.el.getObject3D('mesh'), colorData);
+  }
 });
                             
 
@@ -85,10 +79,11 @@ AFRAME.registerComponent('alongpathevent', {
   init: function() {
     this.update.bind(this);
     this.el.addEventListener('movingended', function(event) {
+      // 'this' appears to be the portion of the document that specifies the
+      // element in which the event happens.
       console.log("object event:", event);
-      console.log(this);
       var el = event.target;
-      console.log(this);
+      console.log(this);  // These two are equivalent.
       console.log(el);
     });
     this.el.addEventListener('movingstarted', function(event) {
