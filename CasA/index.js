@@ -1,4 +1,3 @@
-
 AFRAME.registerComponent('model-r', {
   schema: {default: 1.0},
   init: function () {
@@ -38,7 +37,10 @@ setMeshColor = function(mesh, colorData) {
     colors = colorData;
   }
   
-  if (!mesh) { console.log("********* oops, no mesh"); return; }
+  if (!mesh) {
+    console.log("********* oops, no mesh", mesh, colorData);
+    return;
+  }
 
   mesh.traverse(function(node) {
     if (node.isMesh) {
@@ -72,26 +74,52 @@ AFRAME.registerComponent('gltf-color', {
     setMeshColor(this.el.getObject3D('mesh'), colorData);
   }
 });
-                            
+
+
+var tour = {
+  track1: {dur: "5000"},
+  track2: {dur: "5000"},
+  track3: {dur: "5000"}
+};
+  
 
 AFRAME.registerComponent('alongpathevent', {
   schema: {default: 1.0},
   init: function() {
     this.update.bind(this);
+
     this.el.addEventListener('movingended', function(event) {
       // 'this' appears to be the portion of the document that specifies the
       // element in which the event happens.
-      console.log("object event:", event);
+      console.log("stopped event:", event);
       var el = event.target;
       console.log(this);  // These two are equivalent.
       console.log(el);
     });
     this.el.addEventListener('movingstarted', function(event) {
-      console.log("object event:", event);});
+      console.log("started event:", event);});
+    this.el.addEventListener('alongpath-trigger-activated', function(event) {
+      console.log("trigger event:", event);});
     this.el.addEventListener('click', function(event) {
       console.log("click!!!", event);
       var el = document.getElementById("mainCamera");
-      el.setAttribute("alongpath", "curve: #track2; dur: 5000");
+
+      // Get the alongpath attribute from the camera entity.
+      var alongpath = el.getAttribute("alongpath");
+      console.log("alongpath Attr is here:", alongpath);
+
+      // What curve are we on?
+      var pathNum = Number(alongpath.curve.substring(6));
+      pathNum = (pathNum < 3) ? pathNum + 1 : 1 ;
+
+      // The setAttribute function restarts the animation in some way
+      // that simply modifying alongpath.curve does not.
+      var track = "track" + String(pathNum);
+      console.log("curve: #" + track +
+        "; dur: " + tour[track].dur + ";");
+      el.setAttribute("alongpath",
+                      "curve: #" + track +
+                      "; dur: " + tour[track].dur + ";");
     });
 
   },
