@@ -76,10 +76,15 @@ AFRAME.registerComponent('gltf-color', {
 });
 
 
+// Here is the tour on which our users will go.  Each key in this object
+// corresponds to the id of an a-curve object in the html.  Together they
+// make up a linked list, with each entry identifying its curve and also
+// pointing to the next curve in the list.
 var tour = {
-  track1: {dur: "5000", next: "track2"},
-  track2: {dur: "5000", next: "track3"},
-  track3: {dur: "10000", next: "track1"}
+  firstOrbit: {dur: "10000", next: "track1", text: "end of firstOrbit"},
+  track1: {dur: "5000", next: "track2", text: "end of track1"},
+  track2: {dur: "5000", next: "track3", text: "end of track2"},
+  track3: {dur: "10000", next: "track1", text: "end of track3"}
 };
   
 
@@ -116,6 +121,17 @@ AFRAME.registerComponent('alongpathevent', {
       // the command to start the next curve.
       var el = document.getElementById("mainCamera");
       el.addEventListener('click', clickHandler);
+
+      var textHolder = document.getElementById("textHolder");
+      var currentPath = el.getAttribute("alongpath").curve.substring(1)
+      var textVal = textHolder.getAttribute("text");
+      textVal.value = tour[currentPath].text;
+      textHolder.setAttribute("text", textVal);
+      var pos = el.getAttribute("position");
+      var textPos = textHolder.getAttribute("position");
+      textPos = {x: pos.x, y: pos.y, z: pos.z - 1};
+      textHolder.setAttribute("position", textPos);
+      console.log(currentPath, pos, textPos);
       
     });
 
