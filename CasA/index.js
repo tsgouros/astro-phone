@@ -77,9 +77,9 @@ AFRAME.registerComponent('gltf-color', {
 
 
 var tour = {
-  track1: {dur: "5000"},
-  track2: {dur: "5000"},
-  track3: {dur: "5000"}
+  track1: {dur: "5000", next: "track2"},
+  track2: {dur: "5000", next: "track3"},
+  track3: {dur: "10000", next: "track1"}
 };
   
 
@@ -88,39 +88,50 @@ AFRAME.registerComponent('alongpathevent', {
   init: function() {
     this.update.bind(this);
 
-    this.el.addEventListener('movingended', function(event) {
-      // 'this' appears to be the portion of the document that specifies the
-      // element in which the event happens.
-      console.log("stopped event:", event);
-      var el = event.target;
-      console.log(this);  // These two are equivalent.
-      console.log(el);
-    });
-    this.el.addEventListener('movingstarted', function(event) {
-      console.log("started event:", event);});
-    this.el.addEventListener('alongpath-trigger-activated', function(event) {
-      console.log("trigger event:", event);});
-    this.el.addEventListener('click', function(event) {
-      console.log("click!!!", event);
-      var el = document.getElementById("mainCamera");
+    var clickHandler = function(event) {
 
+      // First, stop listening for this event.  We'll start listening
+      // again after the next segment is completed.
+      var el = document.getElementById("mainCamera");
+      el.removeEventListener('click', clickHandler);
+      
       // Get the alongpath attribute from the camera entity.
       var alongpath = el.getAttribute("alongpath");
-      console.log("alongpath Attr is here:", alongpath);
 
-      // What curve are we on?
-      var pathNum = Number(alongpath.curve.substring(6));
-      pathNum = (pathNum < 3) ? pathNum + 1 : 1 ;
-
-      // The setAttribute function restarts the animation in some way
-      // that simply modifying alongpath.curve does not.
-      var track = "track" + String(pathNum);
-      console.log("curve: #" + track +
-        "; dur: " + tour[track].dur + ";");
+      // What path are we on (without the '#')?
+      var currentPath = alongpath.curve.substring(1);
+      var nextPath = tour[currentPath].next;
+      
+      // Change the curve, and restart the animation to follow the new
+      // curve.  The setAttribute function restarts the animation in
+      // some way that simply modifying alongpath.curve does not.
       el.setAttribute("alongpath",
-                      "curve: #" + track +
-                      "; dur: " + tour[track].dur + ";");
+                      "curve: #" + nextPath +
+                      "; dur: " + tour[nextPath].dur + ";");
+    };
+    
+    this.el.addEventListener('movingended', function(event) {
+
+      // All we really need to do at the end of a curve is to await
+      // the command to start the next curve.
+      var el = document.getElementById("mainCamera");
+      el.addEventListener('click', clickHandler);
+      
     });
+
+    // We want the first click to interrupt the movement of the camera, but
+    // after that, we want to let each track play to the end.
+    var startListener = function(event) {
+      var el = document.getElementById("mainCamera");
+      el.addEventListener('click', clickHandler);
+      el.removeEventListener('movingstarted', startListener);
+    };
+    this.el.addEventListener('movingstarted', startListener);
+
+    // At the moment we are not using the alongpath-trigger-activated
+    // events.  But we log them because we're curious.
+    this.el.addEventListener('alongpath-trigger-activated', function(event) {
+      console.log("trigger event:", event);});
 
   },
   update: function() {
