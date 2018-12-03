@@ -3,6 +3,7 @@
   <head>
     <meta charset="UTF-8">
     <title>CasA App</title>
+    <link href="CasA.css" rel="stylesheet">
     <script src="https://aframe.io/releases/0.8.2/aframe.min.js"></script>
     <script src="//cdn.rawgit.com/donmccurdy/aframe-extras/v4.2.0/dist/aframe-extras.min.js"></script>
     <script src="https://unpkg.com/aframe-curve-component/dist/aframe-curve-component.min.js"></script>
@@ -10,7 +11,7 @@
     <script type="text/javascript" src="index.js"></script>
   </head>
   <body>
-    <a-scene background="color: #aaf">
+  <a-scene id="mainScene" background="color: #aaf">
       <a-assets>
         <a-asset-item id="fekcorr" src="data/fekcorr-filt-nomtl.gltf">
         </a-asset-item>
@@ -26,35 +27,43 @@
         </a-asset-item>
         <a-asset-item id="si" src="data/newsi-filt.gltf">
         </a-asset-item>
+
+        <audio id="Acceleration"
+               src="data/Acceleration_AJ.WAV"  preload="auto"></audio>
+        <audio id="Infrared"
+               src="data/Infrared_AJ.WAV"  preload="auto"></audio>
+        <audio id="Iron"
+               src="data/Iron_Xray_AJ.WAV"  preload="auto"></audio>
+        <audio id="Jets"
+               src="data/Jets_AJ.WAV" preload="auto"></audio>
+        <audio id="NeutronStar"
+               src="data/NeutronStar_AJ.WAV" preload="auto"></audio>
+        <audio id="OuterBlastOpt"
+               src="data/OuterBlast_Opt_IR_AJ.WAV" preload="auto"></audio>
+        <audio id="OuterBlastXray"
+               src="data/OuterBlast_Xray_AJ.WAV" preload="auto"></audio>
       </a-assets>
 
-      <a-curve id="firstOrbit">
+      
+      <a-curve id="preOrbit">
         <a-curve-point position="0 10 60"></a-curve-point>
-        <a-curve-point position="5 10 60"></a-curve-point>
-        <a-curve-point position="10 10 60"></a-curve-point>
-        <a-curve-point position="20 10 60"></a-curve-point>
-        <a-curve-point position="35 10 60"></a-curve-point>
-        <a-curve-point position="50 5 60"></a-curve-point>
-        <a-curve-point position="50 -10 60"></a-curve-point>
-        <a-curve-point position="35 -20 60"></a-curve-point>
-        <a-curve-point position="20 -20 60"></a-curve-point>
-        <a-curve-point position="5 -20 60"></a-curve-point>
-        <a-curve-point position="-10 -20 60"></a-curve-point>
-        <a-curve-point position="-25 -20 60"></a-curve-point>
-        <a-curve-point position="-40 -10 60"></a-curve-point>
-        <a-curve-point position="-50 15 60"></a-curve-point>
-        <a-curve-point position="-35 15 60"></a-curve-point>
-        <a-curve-point position="-20 15 60"></a-curve-point>
-        <a-curve-point position="-10 20 60"></a-curve-point>
-        <a-curve-point position="-5 25 60"></a-curve-point>
-        <a-curve-point position="0 30 60"></a-curve-point> 
+        <a-curve-point position="0 11 60"></a-curve-point>
+      </a-curve>
+
+      <a-curve id="firstOrbit">
+        <a-curve-point position="0 11 60"></a-curve-point>
+        <a-curve-point position="25 25 60"></a-curve-point>
+        <a-curve-point position="25 -25 60"></a-curve-point>
+        <a-curve-point position="-25 -25 60"></a-curve-point>
+        <a-curve-point position="-25 25 60"></a-curve-point>
+        <a-curve-point position="0 17 60"></a-curve-point>
       </a-curve>
       <a-curve id="track1">
-        <a-curve-point position="0 30 60"></a-curve-point>
+        <a-curve-point position="0 17 60"></a-curve-point>
         <a-curve-point position="30 25 45"></a-curve-point>
         <a-curve-point position="60 20 30"></a-curve-point>
         <a-curve-point position="60 20 0"></a-curve-point>
-        <a-curve-point position="60 25 -15"></a-curve-point>
+        <a-curve-point position="60 25 -15" class="target"></a-curve-point>
       </a-curve>
       <a-curve id="track2">
         <a-curve-point position="60 25 -15"></a-curve-point>
@@ -67,59 +76,101 @@
         <a-curve-point position="0 0 0"></a-curve-point>
         <a-curve-point position="-1 1 -3"></a-curve-point>
       </a-curve>
-    
+      <a-curve id="outerShockSphere"> <!-- pink -->
+        <a-curve-point position="20.4, 7.5, 31.7" class="target"/>
+        <a-curve-point position="20.4, 7.5, 31.7" class="target"/>
+      </a-curve>
+      <a-curve id="arii"> <!-- yellow -->
+        <a-curve-point position="-7, 23.4, 60.5" class="target"/>
+        <a-curve-point position="-7, 23.4, 60.5" class="target"/>
+      </a-curve>
+      <a-curve id="FeK"> <!-- light blue -->
+        <a-curve-point position="4.6, 18, 97.5" class="target"/>
+        <a-curve-point position="4.6, 18, 97.5" class="target"/>
+      </a-curve>
+      <a-curve id="neutronStar"> <!-- purple -->
+        <a-curve-point position="-0.6, -2.2, 91.5" class="target"/>
+        <a-curve-point position="-0.6, -2.2, 91.5" class="target"/>
+      </a-curve>
+      <a-curve id="jets"> <!-- green -->
+        <a-curve-point position="-51.1, 24.75, 56.3" class="target"/>
+        <a-curve-point position="-51.1, 24.75, 56.3" class="target"/>
+      </a-curve>
+      <a-curve id="outerKnots"> <!-- red -->
+        <a-curve-point position="-41.6, 16.5, 53.9" class="target"/>
+        <a-curve-point position="-41.6, 16.5, 53.9" class="target"/>
+      </a-curve>
+      <a-curve id="si"> <!-- dark blue -->
+        <a-curve-point position="-9.4, -15.2, 45.9" class="target"/>
+        <a-curve-point position="-9.4, -15.2, 45.9" class="target"/>
+      </a-curve>
+      
       <!-- Draw the Curve -->
-      <a-draw-curve curveref="#track1" material="color: blue;"></a-draw-curve>
+<!--      <a-draw-curve curveref="#track1" material="color: blue;"></a-draw-curve>
       <a-draw-curve curveref="#track2" material="color: purple;"></a-draw-curve>
       <a-draw-curve curveref="#track3" material="color: green;"></a-draw-curve>
-
+-->
       <a-entity id="textHolder"
-                position="0 10 40"
-                text="width: 20; color: white; value: Lorem ipsum dolor sit amet, consectetur adipiscing elit. Ut enim ad minim veniam">
+                position="0 0 0"
+                text="width: 1.5; color: white; align: center; 
+                      anchor: center; side: double; 
+                      value: *">
       </a-entity>
       
-      <a-entity gltf-model="#fekcorr">
-        <a-animation attribute="model-r"
-                     dur="1000"
-                     from="1"
-                     to="0"
-                     repeat="5"></a-animation>
+      <a-entity gltf-model="#fekcorr" gltf-color="0.49 0.94 0.89">
       </a-entity>
-      <a-entity gltf-model="#cco">
+      <a-entity gltf-model="#cco" gltf-color="0.97 0.45 0.91">
       </a-entity>
-      <a-entity gltf-model="#ar">
-        <a-animation attribute="model-r"
-                     dur="2000"
-                     from="1"
-                     to="0"
-                     repeat="5"></a-animation>
+      <a-entity gltf-model="#ar" gltf-color="0.65 0.65 0.15">
       </a-entity>
-      <a-entity gltf-model="#hetg">
+      <a-entity gltf-model="#hetg" gltf-color="0.26 0.59 0.94">
       </a-entity>
-      <a-entity gltf-model="#jets">
+      <a-entity gltf-model="#jets" gltf-color="0.3 0.55 0.35">
       </a-entity>
-      <a-entity gltf-model="#opt">
+      <a-entity gltf-model="#opt" gltf-color="0.94 0.32 0.4">
       </a-entity>
-      <a-entity gltf-model="#si" gltf-color>
-         <a-animation attribute="gltf-color"
-                     dur="1000"
-                     from="0.1 0.1 0.2"
-                     to="0.7 0.1 0.2"
-                     repeat="4"></a-animation>
+      <a-entity gltf-model="#si" gltf-color="0.66 0.40 0.63">
       </a-entity>
       <a-entity camera alongpathevent 
                 id="mainCamera"
                 position="0 1.6 0"
                 rotation="0 0 0"
                 look-controls="pointerLockEnabled: true"
-                alongpath="curve: #firstOrbit; loop: false; dur: 5000;">
+                alongpath="curve: #preOrbit; loop: false; dur: 5000;">
         <a-entity cursor
                   position="0 0 -1"
                   geometry="primitive: ring; radiusInner: 0.02; radiusOuter: 0.03;"
                   material="color: #CCC; shader: flat;"></a-entity>
       </a-entity>
+      <a-entity id="soundPlayer" sound="src: "></a-entity>
+      <a-grid id="ground" material="src:../grid-cell.png; opacity:0.9"/>
+  </a-scene>
+  <div id="splash">
+    <div id="splash-inner">
+      <div class="title">A Look at Cassiopeia A</div>
+      <div class="sub-title">The Little Star that made a Big Mess</div>
+      <div id="go-button" onclick="pressStart()">Start</div>
+      <div class="sub-title">Created By</div>
+      <br />
+    </div>
+  </div>
+  <script type="text/javascript">
+    // This stuff is down here at the end because it has to run as soon as
+    // all the a-frame assets are loaded.  It manages the splash screen shown
+    // above, by pausing the action as soon as everything is loaded, and then by
+    // executing .play() when the start button is pressed.
 
-      <a-grid id="ground" material="src:../grid-cell.png; opacity:0.9" geometry:"primitive: sphere"></a-grid>
-    </a-scene>
+    // Pause action as soon as everything is loaded.
+    document.getElementById("mainScene").addEventListener("loaded",
+      function() {
+        document.getElementById('mainCamera').pause();
+    });
+    
+    pressStart = function() {
+      document.getElementById("splash").style.display = "none";
+      document.getElementById("go-button").style.display = "none";
+      document.getElementById("mainCamera").play();
+    }
+  </script>
   </body>
 </html>

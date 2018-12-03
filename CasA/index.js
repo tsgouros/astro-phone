@@ -1,3 +1,14 @@
+
+var soundList = [
+  "Acceleration",
+  "Infrared",
+  "Iron",
+  "Jets",
+  "NeutronStar",
+  "OuterBlastOpt",
+  "OuterBlastXray"
+];
+
 AFRAME.registerComponent('model-r', {
   schema: {default: 1.0},
   init: function () {
@@ -29,7 +40,7 @@ setMeshColor = function(mesh, colorData) {
 
   var colors;
   if (typeof(colorData) == 'string') {
-    var colorArray = this.data.split(" ").map(Number);
+    var colorArray = colorData.split(" ").map(Number);
     colors = {r: colorArray[0], g: colorArray[1], b: colorArray[2] };
   } else if (Array.isArray(colorData)) {
     colors = {r: colorData[0], g: colorData[1], b: colorData[2] };
@@ -81,10 +92,26 @@ AFRAME.registerComponent('gltf-color', {
 // make up a linked list, with each entry identifying its curve and also
 // pointing to the next curve in the list.
 var tour = {
-  firstOrbit: {dur: "10000", next: "track1", text: "end of firstOrbit"},
-  track1: {dur: "5000", next: "track2", text: "end of track1"},
-  track2: {dur: "5000", next: "track3", text: "end of track2"},
-  track3: {dur: "10000", next: "track1", text: "end of track3"}
+  preOrbit:   {dur: "2000",
+               next: "firstOrbit",
+               audio: "Iron",
+               text: "end of preOrbit: You're looking at data from the Cassiopeia A supernova. Click anywhere on the screen to orbit the data and see it from all angles."},
+  firstOrbit: {dur: "20000",
+               next: "track1",
+               audio: "Acceleration",
+               text: "end of firstOrbit:  The pink that you see is the shock sphere. Click to begin a tour."},
+  track1:     {dur: "5000",
+               next: "track2",
+               audio: "Iron",
+               text: "end of track1: Look to your left to sight down the green jet toward the neutron star in the middle of the supernova.  Click to advance to the next stop."},
+  track2:     {dur: "5000",
+               next: "track3",
+               audio: "Iron",
+               text: "end of track2: Lorem ipsum dolor sit amet, consectetur adipiscing elit. Ut enim ad minim veniam"},
+  track3:     {dur: "10000",
+               next: "track1",
+               audio: "Iron",
+               text: "end of track3: Lorem ipsum dolor sit amet, consectetur adipiscing elit. Ut enim ad minim veniam"}
 };
   
 
@@ -94,7 +121,8 @@ AFRAME.registerComponent('alongpathevent', {
     this.update.bind(this);
 
     var clickHandler = function(event) {
-
+      // TBD: This should stop any audio playing, too.
+      
       // First, stop listening for this event.  We'll start listening
       // again after the next segment is completed.
       var el = document.getElementById("mainCamera");
@@ -119,28 +147,36 @@ AFRAME.registerComponent('alongpathevent', {
 
       // All we really need to do at the end of a curve is to await
       // the command to start the next curve.
-      var el = document.getElementById("mainCamera");
-      el.addEventListener('click', clickHandler);
+      var mainCamera = document.getElementById("mainCamera");
+      mainCamera.addEventListener('click', clickHandler);
 
+      // What path did we just finish?
+      var currentPath = mainCamera.getAttribute("alongpath").curve.substring(1)
+      
+      // Display the text for the (end of the) path.
       var textHolder = document.getElementById("textHolder");
-      var currentPath = el.getAttribute("alongpath").curve.substring(1)
       var textVal = textHolder.getAttribute("text");
       textVal.value = tour[currentPath].text;
       textHolder.setAttribute("text", textVal);
-      var pos = el.getAttribute("position");
+      var pos = mainCamera.getAttribute("position");
       var textPos = textHolder.getAttribute("position");
       textPos = {x: pos.x, y: pos.y, z: pos.z - 1};
       textHolder.setAttribute("position", textPos);
-      console.log(currentPath, pos, textPos);
-      
+
+      // Play the audio for the (end of the) path.
+      var sound = document.getElementById(tour[currentPath].audio);
+      sound.play();
+      sound.addEventListener("ended", function(event) {
+        console.log("clip ended");
+      });
     });
 
     // We want the first click to interrupt the movement of the camera, but
     // after that, we want to let each track play to the end.
     var startListener = function(event) {
-      var el = document.getElementById("mainCamera");
-      el.addEventListener('click', clickHandler);
-      el.removeEventListener('movingstarted', startListener);
+      var mainCamera = document.getElementById("mainCamera");
+      mainCamera.addEventListener('click', clickHandler);
+      mainCamera.removeEventListener('movingstarted', startListener);
     };
     this.el.addEventListener('movingstarted', startListener);
 
