@@ -9,6 +9,8 @@ var soundList = [
   "OuterBlastXray"
 ];
 
+var currentlyPlaying;
+
 AFRAME.registerComponent('model-r', {
   schema: {default: 1.0},
   init: function () {
@@ -91,27 +93,104 @@ AFRAME.registerComponent('gltf-color', {
 // corresponds to the id of an a-curve object in the html.  Together they
 // make up a linked list, with each entry identifying its curve and also
 // pointing to the next curve in the list.
+//
+// Components of a tour segment:
+//    dur -       The duration (milliseconds) of the flight time.
+//    next -      The name (id) of the next curve segment on the tour.
+//    audio -     Audio that is to be played *at the end* of the tour segment.
+//    playWhile - If true, we can start the next tour segment while the audio
+//                is playing.  Note that you probably won't be able to read the
+//                text in that case unless you're moving slowly.
+//    text -      Text that will appear *at the end* of the tour segment.
 var tour = {
-  preOrbit:   {dur: "2000",
+  // This segment is just a fake, to get everything loaded and ready to go.
+  prepreOrbit:{dur: "1000",
+               next: "preOrbit",
+               audio: "",
+               playWhile: false,
+               text: "You're looking at data from the Cassiopeia A supernova. Click anywhere on the screen to orbit the data and see it from all angles.  Clicking will move you along to another stop on the tour.",
+               textOffset: {x: 0, y: 0, z: -1}
+              },
+  preOrbit:   {dur: "1000",
                next: "firstOrbit",
-               audio: "Iron",
-               text: "end of preOrbit: You're looking at data from the Cassiopeia A supernova. Click anywhere on the screen to orbit the data and see it from all angles."},
+               audio: "Iron", // Should be a CasA overview.
+               playWhile: true,
+               text: "",
+               textOffset: {x: 0, y: 0, z: -1}
+              },
+  
   firstOrbit: {dur: "20000",
-               next: "track1",
+               next: "neutronStar",
+               audio: "",
+               playWhile: false,
+               text: "Click to tour some of the details.",
+               textOffset: {x: 0, y: 0, z: -1}
+              },
+  
+  neutronStar:{dur: "5000",
+               next: "jetsMatter",
+               audio: "NeutronStar",
+               playWhile: false,
+               text: "Neutron Star: \nAt the center of Cas A is a neutron star, a small \nultra-dense star created by the supernova.",
+               textOffset: {x: 0, y: 0, z: -1}
+              },
+  
+  jetsMatter: {dur: "5000",
+               next: "revShock",
+               audio: "Jets",
+               playWhile: false,
+               text: "Fiducial Jets: \nIn green, two jets of material are seen. \nThese jets funnel material and energy \nduring and after the explosion.",
+               textOffset: {x: 0, y: 0, z: -1}
+              },
+  
+  revShock:   {dur: "5000",
+               next: "FeK",
                audio: "Acceleration",
-               text: "end of firstOrbit:  The pink that you see is the shock sphere. Click to begin a tour."},
-  track1:     {dur: "5000",
-               next: "track2",
+               playWhile: false,
+               text: "Reverse Shock Sphere: \nThe Cas A supernova remnant acts like a \nrelativistic pinball machine by accelerating \nelectrons to enormous energies. This \narea shows where the acceleration is taking \nplace in an expanding shock wave generated \nby the explosion.",
+               textOffset: {x: 0, y: 0, z: -1}
+              },
+  
+  FeK:        {dur: "5000",
+               next: "arSpitzer",
                audio: "Iron",
-               text: "end of track1: Look to your left to sight down the green jet toward the neutron star in the middle of the supernova.  Click to advance to the next stop."},
-  track2:     {dur: "5000",
-               next: "track3",
-               audio: "Iron",
-               text: "end of track2: Lorem ipsum dolor sit amet, consectetur adipiscing elit. Ut enim ad minim veniam"},
-  track3:     {dur: "10000",
-               next: "track1",
-               audio: "Iron",
-               text: "end of track3: Lorem ipsum dolor sit amet, consectetur adipiscing elit. Ut enim ad minim veniam"}
+               playWhile: false,
+               text: "FeK (Chandra Telescope): \nThe light blue portions of this model \nrepresent radiation from the element \niron as seen in X-ray light from Chandra. \nIron is forged in the very core of the \nstar but ends up on the outside \nof the expanding ring of debris.",
+               textOffset: {x: 0, y: 0, z: -1}
+              },
+
+  arSpitzer:  {dur: "5000",
+               next: "siChandra",
+               audio: "Infrared",
+               playWhile: false,
+               text: "ArII Spitzer Telescope: \nThe yellow portions of the model represent \ninfrared data from the Spitzer Space Telescope. \nThis is cooler debris that has yet to \nbe superheated by a passing shock wave",
+               textOffset: {x: 0, y: 0, z: -1}
+              },
+  
+  siChandra:  {dur: "5000",
+               next: "outerKnots",
+               audio: "OuterBlastXray",
+               playWhile: false,
+               text: "Si Chandra Telescope: \nThe dark blue colored elements of the model \nrepresent the outer blast wave of the \nexplosion as seen in X-rays by Chandra.",
+               textOffset: {x: 0, y: 0, z: -1}
+              },
+  
+  outerKnots: {dur: "5000",
+               next: "endOfJet",
+               audio: "OuterBlastOpt",
+               playWhile: false,
+               text: "Outer Knots: \nThe red colored elements of the model represent \nthe outer blast wave of the explosion as seen in \noptical and infrared light, \nmuch of which is silicon.",
+               textOffset: {x: 0, y: 0, z: -1}
+              },
+  
+  endOfJet:   {dur: "5000",
+               next: "firstOrbit",
+               audio: "",
+               playWhile: false,
+               text: "Look to your left to sight down the green jet toward the neutron star in the middle of the supernova.  The jet does not point directly at the neutron star because it has moved in the 350 years since CasA exploded.",
+               textOffset: {x: 0, y: 0, z: -1}
+              }
+  
 };
   
 
@@ -120,15 +199,11 @@ AFRAME.registerComponent('alongpathevent', {
   init: function() {
     this.update.bind(this);
 
-    var clickHandler = function(event) {
-      // TBD: This should stop any audio playing, too.
-      
-      // First, stop listening for this event.  We'll start listening
-      // again after the next segment is completed.
-      var el = document.getElementById("mainCamera");
-      el.removeEventListener('click', clickHandler);
+    // Moves us onto the next path on the tour and begins playing.
+    var advanceTourSegment = function() {
       
       // Get the alongpath attribute from the camera entity.
+      var el = document.getElementById("mainCamera");
       var alongpath = el.getAttribute("alongpath");
 
       // What path are we on (without the '#')?
@@ -143,12 +218,25 @@ AFRAME.registerComponent('alongpathevent', {
                       "; dur: " + tour[nextPath].dur + ";");
     };
     
+    var clickHandler = function(event) {
+      // TBD: This should stop any audio playing, too.
+      
+      // First, stop listening for this event.  We'll start listening
+      // again after the next segment is completed.
+      document.getElementsByTagName('body')[0]
+        .removeEventListener('click', clickHandler);
+
+      advanceTourSegment();
+    };
+    
     this.el.addEventListener('movingended', function(event) {
 
       // All we really need to do at the end of a curve is to await
       // the command to start the next curve.
       var mainCamera = document.getElementById("mainCamera");
-      mainCamera.addEventListener('click', clickHandler);
+
+      document.getElementsByTagName('body')[0]
+        .addEventListener('click', clickHandler);
 
       // What path did we just finish?
       var currentPath = mainCamera.getAttribute("alongpath").curve.substring(1)
@@ -160,23 +248,51 @@ AFRAME.registerComponent('alongpathevent', {
       textHolder.setAttribute("text", textVal);
       var pos = mainCamera.getAttribute("position");
       var textPos = textHolder.getAttribute("position");
-      textPos = {x: pos.x, y: pos.y, z: pos.z - 1};
+      offset = tour[currentPath].textOffset;
+      textPos = {x: pos.x + offset.x,
+                 y: pos.y + offset.y,
+                 z: pos.z + offset.z};
       textHolder.setAttribute("position", textPos);
 
       // Play the audio for the (end of the) path.
       var sound = document.getElementById(tour[currentPath].audio);
-      sound.play();
-      sound.addEventListener("ended", function(event) {
-        console.log("clip ended");
-      });
+
+      // If there is sound currently playing, stop it.
+      if (currentlyPlaying) {
+        currentlyPlaying.pause();
+      };
+
+      // Play the sound, and set the currently playing pointer.
+      if (sound) {
+        sound.play();
+        currentlyPlaying = sound;
+      };
+
+      // If it's ok to hear the sound while moving, advance the tour.
+      if (tour[currentPath].playWhile) {
+        advanceTourSegment();
+      };
+      
+      // When the clip is over, remove this listener.
+      var endedListener = function(event) {
+        sound.removeEventListener("ended", endedListener);
+      };
+
+      // Set a listener for the end of the audio.  This isn't doing much now.
+      if (sound) {      
+        sound.addEventListener("ended", endedListener);
+      };
     });
 
     // We want the first click to interrupt the movement of the camera, but
     // after that, we want to let each track play to the end.
     var startListener = function(event) {
-      var mainCamera = document.getElementById("mainCamera");
-      mainCamera.addEventListener('click', clickHandler);
-      mainCamera.removeEventListener('movingstarted', startListener);
+
+//      document.getElementsByTagName('body')[0]
+//        .addEventListener('click', clickHandler);
+
+      document.getElementById("mainCamera")
+        .removeEventListener('movingstarted', startListener);
     };
     this.el.addEventListener('movingstarted', startListener);
 
