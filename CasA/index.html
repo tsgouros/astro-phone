@@ -49,34 +49,34 @@
         <a-curve-point position="50 25 60"></a-curve-point>
         <a-curve-point position="0 17 60"></a-curve-point>
       </a-curve>
-      <a-curve id="neutronStar"> <!-- purple -->
-        <a-curve-point position="0 17 60"/>
-        <a-curve-point position="0 8 30"/>
-        <a-curve-point position="-3.1 0 -1"/>
+      <a-curve id="neutronStar"> 
+        <a-curve-point position="0 17 60"></a-curve-point>
+        <a-curve-point position="0 8 30"></a-curve-point>
+        <a-curve-point position="-3.1 0 -1"></a-curve-point>
       </a-curve>
       <a-curve id="jetsMatter"> <!-- green -->
-        <a-curve-point position="-3.1 0 -1"/>
-        <a-curve-point position="-21 -20 36.3" class="target"/>
+        <a-curve-point position="-3.1 0 -1"></a-curve-point>
+        <a-curve-point position="-21 -20 36.3" class="target"></a-curve-point>
       </a-curve>
       <a-curve id="revShock"> <!-- pink -->
-        <a-curve-point position="-21 -20 36.3"/>
-        <a-curve-point position="12 -11 32" class="target"/>
+        <a-curve-point position="-21 -20 36.3"></a-curve-point>
+        <a-curve-point position="12 -11 32" class="target"></a-curve-point>
       </a-curve>
       <a-curve id="FeK"> <!-- light blue -->
-        <a-curve-point position="12 -11 32"/>
-        <a-curve-point position="-18 24 44" class="target"/>
+        <a-curve-point position="12 -11 32"></a-curve-point>
+        <a-curve-point position="-18 24 44" class="target"></a-curve-point>
       </a-curve>
       <a-curve id="arSpitzer"> <!-- yellow -->
-        <a-curve-point position="-18 24 44"/>
-        <a-curve-point position="-18 10 34" class="target"/>
+        <a-curve-point position="-18 24 44"></a-curve-point>
+        <a-curve-point position="-18 10 34" class="target"></a-curve-point>
       </a-curve>
       <a-curve id="siChandra"> <!-- dark blue -->
-        <a-curve-point position="-18 10 34"/>
-        <a-curve-point position="-9.4 -15.2 45.9" class="target"/>
+        <a-curve-point position="-18 10 34"></a-curve-point>
+        <a-curve-point position="-9.4 -15.2 45.9" class="target"></a-curve-point>
       </a-curve>
       <a-curve id="outerKnots"> <!-- red -->
-        <a-curve-point position="-9.4 -15.2 45.9"/>
-        <a-curve-point position="-51 21 -1" class="target"/>
+        <a-curve-point position="-9.4 -15.2 45.9"></a-curve-point>
+        <a-curve-point position="-51 21 -1" class="target"></a-curve-point>
       </a-curve>
       <a-curve id="endOfJet">
         <a-curve-point position="-51 21 -1"></a-curve-point>
@@ -126,41 +126,41 @@
                 rotation="0 0 0"
                 look-controls="pointerLockEnabled: true"
                 alongpath="curve: #prepreOrbit; loop: false; dur: 1000;">
-        <a-entity cursor
+        <a-entity cursor="fuse: false;"
                   position="0 0 -1"
                   geometry="primitive: ring; radiusInner: 0.02; radiusOuter: 0.03;"
                   material="color: #CCC; shader: flat;"></a-entity>
       </a-entity>
       <a-entity id="soundPlayer" sound="src: "></a-entity>
-      <a-grid id="ground" material="src:../grid-cell.png; opacity:0.9"/>
+      <a-grid id="ground" material="src:../grid-cell.png; opacity:0.9"></a-grid>
   </a-scene>
   <div id="sound-streams">
     <audio id="Acceleration">
-      <source src="data/Acceleration_AJ.WAV" type="audio/wav"/>
+      <source src="data/Acceleration_AJ.WAV" type="audio/wav"></source>
     </audio>
     <audio id="Infrared">
-      <source src="data/Infrared_AJ.WAV" type="audio/wav"/>
+      <source src="data/Infrared_AJ.WAV" type="audio/wav"></source>
     </audio>
     <audio id="Iron">
-      <source src="data/Iron_Xray_AJ.WAV" type="audio/wav"/>
+      <source src="data/Iron_Xray_AJ.WAV" type="audio/wav"></source>
     </audio>
     <audio id="Jets">
-      <source src="data/Jets_AJ.WAV" type="audio/wav"/>
+      <source src="data/Jets_AJ.WAV" type="audio/wav"></source>
     </audio>
     <audio id="NeutronStar">
-      <source src="data/NeutronStar_AJ.WAV" type="audio/wav"/>
+      <source src="data/NeutronStar_AJ.WAV" type="audio/wav"></source>
     </audio>
     <audio id="OuterBlastOpt">
-      <source src="data/OuterBlast_Opt_IR_AJ.WAV" type="audio/wav"/>
+      <source src="data/OuterBlast_Opt_IR_AJ.WAV" type="audio/wav"></source>
     </audio>
     <audio id="OuterBlastXray">
-      <source src="data/OuterBlast_Xray_AJ.WAV" type="audio/wav"/>
+      <source src="data/OuterBlast_Xray_AJ.WAV" type="audio/wav"></source>
     </audio>
   </div>
   <div id="splash">
     <div id="splash-inner">
       <div class="title">A Look at Cassiopeia A</div>
-      <div class="sub-title">The Little Star that made a Big Mess</div>
+      <div class="sub-title">Little Star, Big Mess</div>
       <div id="go-button" onclick="pressStart()">Start</div>
       <!--<div id="go-button-silent" onclick="pressSilentStart()">(Silent)</div>-->
       <div class="sub-title">Created By</div>
@@ -184,6 +184,15 @@
       document.getElementById("go-button").style.display = "none";
       /*document.getElementById("go-button-silent").style.display = "none";*/
       document.getElementById("mainCamera").play();
+
+      var context = new AudioContext();
+
+      var buffer = context.createBuffer(1, 1, 22050);
+      var source = context.createBufferSource();
+      source.buffer = buffer;
+      source.connect(context.destination);
+      source.start(0);
+    
     }
 
     pressSilentStart = function() {
