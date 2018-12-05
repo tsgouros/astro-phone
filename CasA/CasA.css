@@ -32,14 +32,14 @@
 
 #go-button {
     font-family: monospace;
-    font-size: 32px;
+    font-size: 25px;
     user-select: none;
     background-color: white;
     background-size: contain;
     background-repeat: no-repeat;
     background-position-y: center;
-    width: 200px;
-    height: 200px;
+    width: 100px;
+    height: 100px;
     border-radius: 50%;
     color: white;
     background-color: rgba(20, 20, 120, 0.7);
