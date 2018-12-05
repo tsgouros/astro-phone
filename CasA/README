@@ -1,3 +1,8 @@
 This is the output directory. All code (html and js) goes here.  The
 data (the various gltf files) lives in the data directory, but it is
 copied here (into a local 'data' directory) during the build.
+
+Here are a couple of models we've used and want to remember:
+  http://fasility.com/vr/park/gwc16.html
+  http://fasility.com/vr/big/monuments/index16.html
+

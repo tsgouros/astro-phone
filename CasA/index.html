@@ -186,9 +186,11 @@
       /*document.getElementById("go-button-silent").style.display = "none";*/
       document.getElementById("mainCamera").play();
 
+      // Load all the sounds and play-then-pause them all, to get them
+      // permission to run under the iOS rules.
       var sounds = document.getElementsByTagName('audio');
       console.log("************", sounds, sounds[0]);
-    for (i = 0; i < sounds.length; i++) {
+      for (i = 0; i < sounds.length; i++) {
         console.log("playing, then pausing:", sounds[i]);
         sounds[i].play(); sounds[i].pause();
       };
@@ -201,6 +203,6 @@
       /* document.getElementById("go-button-silent").style.display = "none"; */
       document.getElementById("mainCamera").play();
     }
-  </script>
+    </script>
   </body>
 </html>
