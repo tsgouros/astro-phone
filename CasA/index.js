@@ -102,6 +102,9 @@ AFRAME.registerComponent('gltf-color', {
 //                is playing.  Note that you probably won't be able to read the
 //                text in that case unless you're moving slowly.
 //    text -      Text that will appear *at the end* of the tour segment.
+//    textOffset- The location where the text is to appear, relative to the
+//                camera position.
+//    textRotate- The euler angles of the text location.
 var tour = {
   // This segment is just a fake, to get everything loaded and ready to go.
   prepreOrbit:{dur: "1000",
@@ -109,14 +112,16 @@ var tour = {
                audio: "",
                playWhile: false,
                text: "You're looking at data from the Cassiopeia A supernova. Click anywhere on the screen to orbit the data and see it from all angles.  Clicking will move you along to another stop on the tour.",
-               textOffset: {x: 0, y: 0, z: -1}
+               textOffset: {x: 0, y: 0, z: -1},
+               textRotate: {pitch: 0, roll: 0; yaw: 0}
               },
   preOrbit:   {dur: "1000",
                next: "firstOrbit",
                audio: "Iron", // Should be a CasA overview.
                playWhile: true,
                text: "",
-               textOffset: {x: 0, y: 0, z: -1}
+               textOffset: {x: 0, y: 0, z: -1},
+               textRotate: {pitch: 0, roll: 0; yaw: 0}
               },
   
   firstOrbit: {dur: "20000",
@@ -124,7 +129,8 @@ var tour = {
                audio: "",
                playWhile: false,
                text: "Click to tour some of the details.",
-               textOffset: {x: 0, y: 0, z: -1}
+               textOffset: {x: 0, y: 0, z: -1},
+               textRotate: {pitch: 0, roll: 0; yaw: 0}
               },
   
   neutronStar:{dur: "5000",
@@ -132,7 +138,8 @@ var tour = {
                audio: "NeutronStar",
                playWhile: false,
                text: "Neutron Star: \nAt the center of Cas A is a neutron star, a small \nultra-dense star created by the supernova.",
-               textOffset: {x: 0, y: 0, z: -1}
+               textOffset: {x: 0, y: 0, z: -1},
+               textRotate: {pitch: 0, roll: 0; yaw: 0}
               },
   
   jetsMatter: {dur: "5000",
@@ -140,7 +147,8 @@ var tour = {
                audio: "Jets",
                playWhile: false,
                text: "Fiducial Jets: \nIn green, two jets of material are seen. \nThese jets funnel material and energy \nduring and after the explosion.",
-               textOffset: {x: 0, y: 0, z: -1}
+               textOffset: {x: 0, y: 0, z: -1},
+               textRotate: {pitch: 0, roll: 0; yaw: 0}
               },
   
   revShock:   {dur: "5000",
@@ -148,7 +156,8 @@ var tour = {
                audio: "Acceleration",
                playWhile: false,
                text: "Reverse Shock Sphere: \nThe Cas A supernova remnant acts like a \nrelativistic pinball machine by accelerating \nelectrons to enormous energies. This \narea shows where the acceleration is taking \nplace in an expanding shock wave generated \nby the explosion.",
-               textOffset: {x: 0, y: 0, z: -1}
+               textOffset: {x: 0, y: 0, z: -1},
+               textRotate: {pitch: 0, roll: 0; yaw: 0}
               },
   
   FeK:        {dur: "5000",
@@ -156,7 +165,8 @@ var tour = {
                audio: "Iron",
                playWhile: false,
                text: "FeK (Chandra Telescope): \nThe light blue portions of this model \nrepresent radiation from the element \niron as seen in X-ray light from Chandra. \nIron is forged in the very core of the \nstar but ends up on the outside \nof the expanding ring of debris.",
-               textOffset: {x: 0, y: 0, z: -1}
+               textOffset: {x: 0, y: 0, z: -1},
+               textRotate: {pitch: 0, roll: 0; yaw: 0}
               },
 
   arSpitzer:  {dur: "5000",
@@ -164,7 +174,8 @@ var tour = {
                audio: "Infrared",
                playWhile: false,
                text: "ArII Spitzer Telescope: \nThe yellow portions of the model represent \ninfrared data from the Spitzer Space Telescope. \nThis is cooler debris that has yet to \nbe superheated by a passing shock wave",
-               textOffset: {x: 0, y: 0, z: -1}
+               textOffset: {x: 0, y: 0, z: -1},
+               textRotate: {pitch: 0, roll: 0; yaw: 0}
               },
   
   siChandra:  {dur: "5000",
@@ -172,7 +183,8 @@ var tour = {
                audio: "OuterBlastXray",
                playWhile: false,
                text: "Si Chandra Telescope: \nThe dark blue colored elements of the model \nrepresent the outer blast wave of the \nexplosion as seen in X-rays by Chandra.",
-               textOffset: {x: 0, y: 0, z: -1}
+               textOffset: {x: 0, y: 0, z: -1},
+               textRotate: {pitch: 0, roll: 0; yaw: 0}
               },
   
   outerKnots: {dur: "5000",
@@ -180,7 +192,8 @@ var tour = {
                audio: "OuterBlastOpt",
                playWhile: false,
                text: "Outer Knots: \nThe red colored elements of the model represent \nthe outer blast wave of the explosion as seen in \noptical and infrared light, \nmuch of which is silicon.",
-               textOffset: {x: 0, y: 0, z: -1}
+               textOffset: {x: 0, y: 0, z: -1},
+               textRotate: {pitch: 0, roll: 0; yaw: 0}
               },
   
   endOfJet:   {dur: "5000",
@@ -188,7 +201,8 @@ var tour = {
                audio: "",
                playWhile: false,
                text: "Look to your left to sight down the green jet toward the neutron star in the middle of the supernova.  The jet does not point directly at the neutron star because it has moved in the 350 years since CasA exploded.",
-               textOffset: {x: 0, y: 0, z: -1}
+               textOffset: {x: 0, y: 0, z: -1},
+               textRotate: {pitch: 0, roll: 0; yaw: 0}
               }
   
 };
@@ -209,6 +223,8 @@ AFRAME.registerComponent('alongpathevent', {
       // What path are we on (without the '#')?
       var currentPath = alongpath.curve.substring(1);
       var nextPath = tour[currentPath].next;
+
+      console.log("mainCamera", el, alongpath, el.getAttribute("position"));
       
       // Change the curve, and restart the animation to follow the new
       // curve.  The setAttribute function restarts the animation in
@@ -223,7 +239,7 @@ AFRAME.registerComponent('alongpathevent', {
       
       // First, stop listening for this event.  We'll start listening
       // again after the next segment is completed.
-      document.getElementsByTagName('body')[0]
+      document.getElementsById('mainScene')[0]
         .removeEventListener('click', clickHandler);
 
       advanceTourSegment();
@@ -235,7 +251,7 @@ AFRAME.registerComponent('alongpathevent', {
       // the command to start the next curve.
       var mainCamera = document.getElementById("mainCamera");
 
-      document.getElementsByTagName('body')[0]
+      document.getElementsById('mainScene')[0]
         .addEventListener('click', clickHandler);
 
       // What path did we just finish?
@@ -252,8 +268,10 @@ AFRAME.registerComponent('alongpathevent', {
       textPos = {x: pos.x + offset.x,
                  y: pos.y + offset.y,
                  z: pos.z + offset.z};
+      var textRot = tour[currentPath].textRotate;
       textHolder.setAttribute("position", textPos);
-
+      textHolder.setAttribute("rotation", textRot);
+      
       // Play the audio for the (end of the) path.
       var sound = document.getElementById(tour[currentPath].audio);
 
