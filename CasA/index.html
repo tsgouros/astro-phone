@@ -2,12 +2,14 @@
 <html>
   <head>
     <meta charset="UTF-8">
+    <meta name="apple-mobile-web-app-capable" content="yes">
     <title>CasA App</title>
     <link href="CasA.css" rel="stylesheet">
     <script src="https://aframe.io/releases/0.8.2/aframe.min.js"></script>
     <script src="//cdn.rawgit.com/donmccurdy/aframe-extras/v4.2.0/dist/aframe-extras.min.js"></script>
     <script src="https://unpkg.com/aframe-curve-component/dist/aframe-curve-component.min.js"></script>
     <script src="https://rawgit.com/protyze/aframe-alongpath-component/master/dist/aframe-alongpath-component.min.js"></script>
+    <script type="text/javascript" src="howler.min.js"></script>
     <script type="text/javascript" src="index.js"></script>
   </head>
   <body>
@@ -131,32 +133,8 @@
                   geometry="primitive: ring; radiusInner: 0.02; radiusOuter: 0.03;"
                   material="color: #CCC; shader: flat;"></a-entity>
       </a-entity>
-      <a-entity id="soundPlayer" sound="src: "></a-entity>
       <a-grid id="ground" material="src:../grid-cell.png; opacity:0.9"></a-grid>
   </a-scene>
-  <div id="sound-streams">
-    <audio id="Acceleration">
-      <source src="data/Acceleration_AJ.WAV" type="audio/wav"></source>
-    </audio>
-    <audio id="Infrared">
-      <source src="data/Infrared_AJ.WAV" type="audio/wav"></source>
-    </audio>
-    <audio id="Iron">
-      <source src="data/Iron_Xray_AJ.WAV" type="audio/wav"></source>
-    </audio>
-    <audio id="Jets">
-      <source src="data/Jets_AJ.WAV" type="audio/wav"></source>
-    </audio>
-    <audio id="NeutronStar">
-      <source src="data/NeutronStar_AJ.WAV" type="audio/wav"></source>
-    </audio>
-    <audio id="OuterBlastOpt">
-      <source src="data/OuterBlast_Opt_IR_AJ.WAV" type="audio/wav"></source>
-    </audio>
-    <audio id="OuterBlastXray">
-      <source src="data/OuterBlast_Xray_AJ.WAV" type="audio/wav"></source>
-    </audio>
-  </div>
   <div id="splash">
     <div id="splash-inner">
       <div class="title">A Look at Cassiopeia A</div>

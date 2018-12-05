@@ -11,6 +11,26 @@ var soundList = [
 
 var currentlyPlaying;
 
+// You can append WAV files using the ffmpeg program, using an input file like
+// this: file '/Users/tomfool/.../Acceleration.WAV'
+//       file '/Users/tomfool/.../Infrared.WAV'
+// and then ffmpeg -f concat -safe 0 -i inputFile.txt -c copy master.WAV
+// You can find the duration of a clip with 'ffmpeg -i Acceleration.WAV' to
+// get the locations and durations for the Howl.sprite definitions.
+var sounds =  new Howl({
+  src: ['data/master.WAV'],
+  sprite: {
+    Acceleration:   [    0, 15940],
+    Infrared:       [15940, 11310],
+    Iron:           [27250, 15180],
+    Jets:           [42430,  9510],
+    NeutronStar:    [51940,  6640],
+    OuterBlastOpt:  [58580,  8670],
+    OuterBlastXray: [67250,  7970] 
+  }
+});
+
+
 AFRAME.registerComponent('model-r', {
   schema: {default: 1.0},
   init: function () {
@@ -273,16 +293,17 @@ AFRAME.registerComponent('alongpathevent', {
       textHolder.setAttribute("rotation", textRot);
       
       // Play the audio for the (end of the) path.
-      var sound = document.getElementById(tour[currentPath].audio);
+      var sound = tour[currentPath].audio;
 
       // If there is sound currently playing, stop it.
       if (currentlyPlaying) {
-        currentlyPlaying.pause();
+        sounds.pause();
       };
 
       // Play the sound, and set the currently playing pointer.
       if (sound) {
-        sound.play();
+        console.log("about to play:", sound);
+        sounds.play(sound);
         currentlyPlaying = sound;
       };
 
@@ -291,15 +312,6 @@ AFRAME.registerComponent('alongpathevent', {
         advanceTourSegment();
       };
       
-      // When the clip is over, remove this listener.
-      var endedListener = function(event) {
-        sound.removeEventListener("ended", endedListener);
-      };
-
-      // Set a listener for the end of the audio.  This isn't doing much now.
-      if (sound) {      
-        sound.addEventListener("ended", endedListener);
-      };
     });
 
     // We want the first click to interrupt the movement of the camera, but
