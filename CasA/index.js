@@ -112,25 +112,25 @@ var tour = {
                audio: "",
                playWhile: false,
                text: "You're looking at data from the Cassiopeia A supernova. Click anywhere on the screen to orbit the data and see it from all angles.  Clicking will move you along to another stop on the tour.",
-               textOffset: {x: 0, y: 0, z: -1},
-               textRotate: {pitch: 0, roll: 0, yaw: 0}
+               textOffset: {x: 0, y: -0.5, z: -1},
+               textRotate: {x: 0, y: 0, z: 0}
               },
   preOrbit:   {dur: "1000",
                next: "firstOrbit",
-               audio: "Iron", // Should be a CasA overview.
+               audio: "", // Should be a CasA overview.
                playWhile: true,
                text: "",
                textOffset: {x: 0, y: 0, z: -1},
-               textRotate: {pitch: 0, roll: 0, yaw: 0}
+               textRotate: {x: 0, y: 0, z: 0}
               },
   
-  firstOrbit: {dur: "20000",
+  firstOrbit: {dur: "15000",
                next: "neutronStar",
                audio: "",
                playWhile: false,
                text: "Click to tour some of the details.",
                textOffset: {x: 0, y: 0, z: -1},
-               textRotate: {pitch: 0, roll: 0, yaw: 0}
+               textRotate: {x: 0, y: 0, z: 0}
               },
   
   neutronStar:{dur: "5000",
@@ -139,7 +139,7 @@ var tour = {
                playWhile: false,
                text: "Neutron Star: \nAt the center of Cas A is a neutron star, a small \nultra-dense star created by the supernova.",
                textOffset: {x: 0, y: 0, z: -1},
-               textRotate: {pitch: 0, roll: 0, yaw: 0}
+               textRotate: {x: 0, y: 0, z: 0}
               },
   
   jetsMatter: {dur: "5000",
@@ -148,7 +148,7 @@ var tour = {
                playWhile: false,
                text: "Fiducial Jets: \nIn green, two jets of material are seen. \nThese jets funnel material and energy \nduring and after the explosion.",
                textOffset: {x: 0, y: 0, z: -1},
-               textRotate: {pitch: 0, roll: 0, yaw: 0}
+               textRotate: {x: 0, y: 0, z: 0}
               },
   
   revShock:   {dur: "5000",
@@ -157,7 +157,7 @@ var tour = {
                playWhile: false,
                text: "Reverse Shock Sphere: \nThe Cas A supernova remnant acts like a \nrelativistic pinball machine by accelerating \nelectrons to enormous energies. This \narea shows where the acceleration is taking \nplace in an expanding shock wave generated \nby the explosion.",
                textOffset: {x: 0, y: 0, z: -1},
-               textRotate: {pitch: 0, roll: 0, yaw: 0}
+               textRotate: {x: 0, y: 0, z: 0}
               },
   
   FeK:        {dur: "5000",
@@ -165,8 +165,8 @@ var tour = {
                audio: "Iron",
                playWhile: false,
                text: "FeK (Chandra Telescope): \nThe light blue portions of this model \nrepresent radiation from the element \niron as seen in X-ray light from Chandra. \nIron is forged in the very core of the \nstar but ends up on the outside \nof the expanding ring of debris.",
-               textOffset: {x: 0, y: 0, z: -1},
-               textRotate: {pitch: 0, roll: 0, yaw: 0}
+               textOffset: {x: -1, y: 0, z: -1},
+               textRotate: {x: 0, y: 45, z: 0}
               },
 
   arSpitzer:  {dur: "5000",
@@ -174,8 +174,8 @@ var tour = {
                audio: "Infrared",
                playWhile: false,
                text: "ArII Spitzer Telescope: \nThe yellow portions of the model represent \ninfrared data from the Spitzer Space Telescope. \nThis is cooler debris that has yet to \nbe superheated by a passing shock wave",
-               textOffset: {x: 0, y: 0, z: -1},
-               textRotate: {pitch: 0, roll: 0, yaw: 0}
+               textOffset: {x: -1, y: 0, z: -1},
+               textRotate: {x: 0, y: 45, z: 0}
               },
   
   siChandra:  {dur: "5000",
@@ -184,7 +184,7 @@ var tour = {
                playWhile: false,
                text: "Si Chandra Telescope: \nThe dark blue colored elements of the model \nrepresent the outer blast wave of the \nexplosion as seen in X-rays by Chandra.",
                textOffset: {x: 0, y: 0, z: -1},
-               textRotate: {pitch: 0, roll: 0, yaw: 0}
+               textRotate: {x: 0, y: 0, z: 0}
               },
   
   outerKnots: {dur: "5000",
@@ -193,7 +193,7 @@ var tour = {
                playWhile: false,
                text: "Outer Knots: \nThe red colored elements of the model represent \nthe outer blast wave of the explosion as seen in \noptical and infrared light, \nmuch of which is silicon.",
                textOffset: {x: 0, y: 0, z: -1},
-               textRotate: {pitch: 0, roll: 0, yaw: 0}
+               textRotate: {x: 0, y: 0, z: 0}
               },
   
   endOfJet:   {dur: "5000",
@@ -202,7 +202,7 @@ var tour = {
                playWhile: false,
                text: "Look to your left to sight down the green jet toward the neutron star in the middle of the supernova.  The jet does not point directly at the neutron star because it has moved in the 350 years since CasA exploded.",
                textOffset: {x: 0, y: 0, z: -1},
-               textRotate: {pitch: 0, roll: 0, yaw: 0}
+               textRotate: {x: 0, y: 0, z: 0}
               }
   
 };
