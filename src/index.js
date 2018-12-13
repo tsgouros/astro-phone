@@ -1,3 +1,7 @@
+require('aframe');
+require('aframe-extras');
+require('aframe-curve-component');
+require('aframe-animation-component');
 import AFRAME from 'aframe';
 
 AFRAME.registerComponent('model-r', {

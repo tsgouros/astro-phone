@@ -8,6 +8,11 @@ module.exports = {
     filename: 'CasA.js',
     path: path.resolve(__dirname, 'CasA')
   },
+  watch: true,
+  watchOptions: {
+    aggregateTimeout: 300,
+    poll: 1000
+  },
   module: {
     rules: [
       {
