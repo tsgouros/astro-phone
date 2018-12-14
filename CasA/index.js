@@ -19,13 +19,16 @@ AFRAME.registerPrimitive('a-particles', {
   // Maps HTML attributes to the 'particles' component's properties.
   mappings: {
     src: 'particles.src',
+    png: 'particles.png',
+    color: 'particles.color'
   }
 });
-
 
 AFRAME.registerComponent('particles', {
   schema: {
     src: {type: 'string', default: ""},
+    png: {type: 'string', default: "particle.png"},
+    color: {type: 'color', default: "#FFF#"}
   },
 
   init: function () {
@@ -61,17 +64,50 @@ AFRAME.registerComponent('particles', {
       }
     };
 
-    var drawParticles = function(event) {
-      console.log("heard it was loaded with elements:", event.detail);
-      console.log("******", this.plist);
+    var drawParticles = function(png, color, event) {
+      console.log("heard it was loaded with elements:", event.detail, png, color);
+
+      // Create some particle variables
+      var particles = new THREE.Geometry();
+      // now create the individual particles
+      for (var p = 0; p < this.plist.length; p++) {
+
+        var particle = new THREE.Vector3(this.plist[p][0],
+                                         this.plist[p][1],
+                                         this.plist[p][2]);
+
+        // add it to the geometry
+        particles.vertices.push(particle);
+      };
+
+      // This might work faster with no transparency and alphaTest = 0.5, but
+      // the visual effect is not as nice.
+      var pMaterial = new THREE.PointsMaterial({
+        color: color,
+        size: 2,
+        map: THREE.ImageUtils.loadTexture(png),
+        blending: THREE.NormalBlending,
+        transparent: true,
+        depthTest: false,
+      });
+
+      // create the particle system
+      this.geometry = new THREE.Points(
+        particles,
+        pMaterial
+      );
+
+      el.setObject3D('points', this.geometry);
+      console.log("******", this.plist, this.geometry);
     };
     
     // Load model from source.
+    console.log("this is our data:", data, this);
     var csvFile = new XMLHttpRequest();
     csvFile.open("GET", data.src, true);
     csvFile.onreadystatechange = readData.bind(this);
     csvFile.send(null);
-    el.addEventListener('loadedList', drawParticles.bind(this));
+    el.addEventListener('loadedList', drawParticles.bind(this, data.png, data.color));
   },
 });
     
