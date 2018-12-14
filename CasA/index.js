@@ -11,6 +11,58 @@ var soundList = [
 
 var currentlyPlaying;
 
+AFRAME.registerPrimitive('a-particles', {
+  defaultComponents: {
+    particles: {},
+  },
+
+  // Maps HTML attributes to the 'particles' component's properties.
+  mappings: {
+    src: 'particles.src',
+  }
+});
+
+
+AFRAME.registerComponent('particles', {
+  schema: {
+    src: {type: 'string', default: ""},
+  },
+
+  init: function () {
+
+    var data = this.data;  // Component property values.
+    var el = this.el;  // Reference to the component's entity.
+    var lines; // Container for resulting data.
+    var pointList = [];
+    
+    console.log("file:", data.src);
+    
+    // Load model from source.
+    var csvFile = new XMLHttpRequest();
+    csvFile.open("GET", data.src, true);
+    csvFile.onreadystatechange = function() {
+      // Makes sure the document is ready to parse.
+      if (csvFile.readyState === 4) {
+        // Makes sure it's found the file.
+        if (csvFile.status === 200) {  
+          var allText = csvFile.responseText;
+          // Separate each line into an array
+          lines = csvFile.responseText.split("\n");
+          for (l in lines) {
+            var line = lines[l];
+            if (line[0] == "#") continue;
+            if (line.length < 3) continue;
+            pointList.push(lines[l].split(",").map(Number));
+          }
+          this.plist = pointList;
+        }
+      }
+    }
+    csvFile.send(null);
+  },
+});
+    
+
 AFRAME.registerComponent('model-r', {
   schema: {default: 1.0},
   init: function () {
@@ -66,7 +118,7 @@ setMeshColor = function(mesh, colorData) {
 
 
 AFRAME.registerComponent('gltf-color', {
-  schema: {default: {r: 0.5, g: 0.5, b: 0.6}},
+  schema: {type: "vec3", default: {r: 0.5, g: 0.5, b: 0.6}},
   init: function() {
 
     // Retrieve colors. If they are specified with the gltf-color attribute,
