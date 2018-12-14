@@ -36,11 +36,9 @@ AFRAME.registerComponent('particles', {
     var pointList = [];
     
     console.log("file:", data.src);
-    
-    // Load model from source.
-    var csvFile = new XMLHttpRequest();
-    csvFile.open("GET", data.src, true);
-    csvFile.onreadystatechange = function() {
+
+    var readData = function() {
+
       // Makes sure the document is ready to parse.
       if (csvFile.readyState === 4) {
         // Makes sure it's found the file.
@@ -50,15 +48,30 @@ AFRAME.registerComponent('particles', {
           lines = csvFile.responseText.split("\n");
           for (l in lines) {
             var line = lines[l];
+            // Ignore comments and blank lines.
             if (line[0] == "#") continue;
             if (line.length < 3) continue;
             pointList.push(lines[l].split(",").map(Number));
           }
+          console.log("POINTS:", pointList, this);
           this.plist = pointList;
         }
+        // Emit a signal when the data is all loaded.
+        el.emit('loadedList', {file: csvFile.responseURL}, false);
       }
-    }
+    };
+
+    var drawParticles = function(event) {
+      console.log("heard it was loaded with elements:", event.detail);
+      console.log("******", this.plist);
+    };
+    
+    // Load model from source.
+    var csvFile = new XMLHttpRequest();
+    csvFile.open("GET", data.src, true);
+    csvFile.onreadystatechange = readData.bind(this);
     csvFile.send(null);
+    el.addEventListener('loadedList', drawParticles.bind(this));
   },
 });
     
@@ -118,7 +131,7 @@ setMeshColor = function(mesh, colorData) {
 
 
 AFRAME.registerComponent('gltf-color', {
-  schema: {type: "vec3", default: {r: 0.5, g: 0.5, b: 0.6}},
+  schema: {default: {r: 0.5, g: 0.5, b: 0.6}},
   init: function() {
 
     // Retrieve colors. If they are specified with the gltf-color attribute,
@@ -373,6 +386,6 @@ AFRAME.registerComponent('alongpathevent', {
 
   },
   update: function() {
-    console.log("something happened!");
+    console.log("update alongpathevent happened!");
   }
 });
