@@ -72,9 +72,12 @@ AFRAME.registerComponent('particles', {
       // now create the individual particles
       for (var p = 0; p < this.plist.length; p++) {
 
-        var particle = new THREE.Vector3(this.plist[p][0],
+        var particle = new THREE.Vector3(-this.plist[p][2],
                                          this.plist[p][1],
-                                         this.plist[p][2]);
+                                         -this.plist[p][0]);
+        // var particle = new THREE.Vector3(-10.56+this.plist[p][0],
+        //                                  2.3+this.plist[p][1],
+        //                                  -4.7-this.plist[p][2]);
 
         // add it to the geometry
         particles.vertices.push(particle);
