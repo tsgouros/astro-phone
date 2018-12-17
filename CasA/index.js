@@ -24,10 +24,36 @@ AFRAME.registerPrimitive('a-particles', {
   }
 });
 
+
+setColor = function(colorData) {
+  // This exists so we can use a comparable color setting for the particles
+  // and the gltf objects.  Unlike setMeshColor(), this takes an input string
+  // and converts it to a THREE.Color object.
+
+  var colors = new THREE.Color();
+  if (typeof(colorData) == 'string') {
+    if (colorData[0] == "#") {
+      colors = THREE.Colors(colorData);
+    } else {
+      var colorArray = colorData.split(" ").map(Number);
+      colors.setRGB( colorArray[0], colorArray[1], colorArray[2]);
+    }
+  } else if (Array.isArray(colorData)) {
+    colors.setRGB( colorData[0], colorData[1], colorData[2]);
+  } else {
+    colors = colorData;
+  }
+
+  console.log("input:" ,colorData, " output:", colors);
+  return colors;
+
+}
+  
+
 AFRAME.registerComponent('particles', {
   schema: {
     src: {type: 'string', default: ""},
-    png: {type: 'string', default: "particle.png"},
+    png: {type: 'string', default: "particle2.png"},
     color: {type: 'color', default: "#FFF#"}
   },
 
@@ -71,10 +97,10 @@ AFRAME.registerComponent('particles', {
       var particles = new THREE.Geometry();
       // now create the individual particles
       for (var p = 0; p < this.plist.length; p++) {
-
-        var particle = new THREE.Vector3(-this.plist[p][2],
-                                         this.plist[p][1],
-                                         -this.plist[p][0]);
+        var scale = 0.55;
+        var particle = new THREE.Vector3(-scale*this.plist[p][2],
+                                         scale*this.plist[p][1],
+                                         -scale*this.plist[p][0]);
         // var particle = new THREE.Vector3(-10.56+this.plist[p][0],
         //                                  2.3+this.plist[p][1],
         //                                  -4.7-this.plist[p][2]);
@@ -82,16 +108,18 @@ AFRAME.registerComponent('particles', {
         // add it to the geometry
         particles.vertices.push(particle);
       };
-
+      
       // This might work faster with no transparency and alphaTest = 0.5, but
       // the visual effect is not as nice.
       var pMaterial = new THREE.PointsMaterial({
-        color: color,
+        color: setColor(color),
         size: 2,
         map: THREE.ImageUtils.loadTexture(png),
         blending: THREE.NormalBlending,
         transparent: true,
-        depthTest: false,
+        opacity: 0.8,
+        alphaTest: 0.7,
+        depthTest: true,
       });
 
       // create the particle system
@@ -139,10 +167,14 @@ AFRAME.registerComponent('model-r', {
    javascript way to parseFloat() an array of strings into an array of floats,
    look into it. */
 
+
 setMeshColor = function(mesh, colorData) {
   // Accepts a mesh and a color.  Checks to see if the mesh is really a mesh.
   // The color can be specified as a string (e.g. "0.3 0.2 0.1") or as an
   // array (e.g. [0.3,0.2,0.1]) or an object (e.g. {r: 0.3, g: 0.2, b: 0.1})
+  //
+  // I don't know why, but the mesh seems to want its color data as an object
+  // {r: 0.3, g: 0.2, b: 0.1} and *not* as a THREE.Color() object.
 
   var colors;
   if (typeof(colorData) == 'string') {
@@ -163,6 +195,7 @@ setMeshColor = function(mesh, colorData) {
     if (node.isMesh) {
       node.material.color = colors;
       node.material.transparent = true;
+      //node.material.opacity = 0.2;
       node.material.needsUpdate = true;
     }
   });
