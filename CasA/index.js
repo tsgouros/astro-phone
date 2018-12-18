@@ -224,7 +224,7 @@ AFRAME.registerComponent('alongpathevent', {
 
     // Are we viewing on a platform where we can't really click, or a
     // desktop where we can?
-    var canClick = false;
+    var canClick = !AFRAME.utils.device.isMobile();
 
     
     // Moves us onto the next path on the tour and begins playing.
@@ -335,6 +335,7 @@ AFRAME.registerComponent('alongpathevent', {
 
         // There is no sound to play.  If we can click, listen for one.
         if (canClick) {
+          if (tour[currentPath].playWhile) advanceTourSegment();
           mainScene.addEventListener('click', clickHandler);
         } else {
           // If we can't click, pause (if a pause is specified), then click.
