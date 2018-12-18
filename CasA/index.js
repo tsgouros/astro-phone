@@ -98,7 +98,7 @@ AFRAME.registerComponent('gltf-color', {
 //    dur -       The duration (milliseconds) of the flight time.
 //    next -      The name (id) of the next curve segment on the tour.
 //    audio -     Audio that is to be played *at the end* of the tour segment.
-//    pause -     Time to pause *if no audio*.
+//    pause -     Time to pause at the end, *if no audio*.
 //    playWhile - If true, we can start the next tour segment while the audio
 //                is playing.  Note that you probably won't be able to read the
 //                text in that case unless you're moving slowly.
@@ -115,6 +115,7 @@ var tour = {
                playWhile: false,
                text: "You're looking at data from the Cassiopeia A supernova. Click anywhere on the screen to orbit the data and see it from all angles.  Clicking will move you along to another stop on the tour.",
                noClickText: "This is data from the Cassiopeia A supernova. Come along on a little tour.",
+               pause: 6000,
                textOffset: {x: 0, y: -0.5, z: -1},
                textRotate: {x: 0, y: 0, z: 0}
               },
@@ -124,6 +125,7 @@ var tour = {
                playWhile: true,
                text: "",
                noClickText: "First let's look around.",
+               pause: 2000,
                textOffset: {x: 0, y: 0, z: -1},
                textRotate: {x: 0, y: 0, z: 0}
               },
@@ -134,6 +136,7 @@ var tour = {
                playWhile: false,
                text: "Click to tour some of the details.",
                noClickText: "Let's take a closer look.",
+               pause: 3000,
                textOffset: {x: 0, y: 0, z: -1},
                textRotate: {x: 0, y: 0, z: 0}
               },
@@ -206,6 +209,7 @@ var tour = {
                audio: "",
                playWhile: false,
                text: "Look to your left to sight down the green jet toward the neutron star in the middle of the supernova.  The jet does not point directly at the neutron star because it has moved in the 350 years since CasA exploded.",
+               pause: 60000,
                textOffset: {x: 0, y: 0, z: -1},
                textRotate: {x: 0, y: 0, z: 0}
               }
@@ -321,6 +325,12 @@ AFRAME.registerComponent('alongpathevent', {
         if (canClick) {
           mainScene.addEventListener('click', clickHandler);
         };
+
+        // If it's ok to hear the sound while moving, advance the tour.      
+        if (tour[currentPath].playWhile) {
+          advanceTourSegment();
+        };
+        
       } else {
 
         // There is no sound to play.  If we can click, listen for one.
@@ -334,11 +344,6 @@ AFRAME.registerComponent('alongpathevent', {
           
         }
       };
-      
-      // If it's ok to hear the sound while moving, advance the tour.      
-      // if (tour[currentPath].playWhile) {
-      //   advanceTourSegment();
-      // };
     }
       
     this.el.addEventListener('movingended', moveEndHandler);
