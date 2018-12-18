@@ -98,10 +98,12 @@ AFRAME.registerComponent('gltf-color', {
 //    dur -       The duration (milliseconds) of the flight time.
 //    next -      The name (id) of the next curve segment on the tour.
 //    audio -     Audio that is to be played *at the end* of the tour segment.
+//    pause -     Time to pause *if no audio*.
 //    playWhile - If true, we can start the next tour segment while the audio
 //                is playing.  Note that you probably won't be able to read the
 //                text in that case unless you're moving slowly.
 //    text -      Text that will appear *at the end* of the tour segment.
+//    noClickText Text appears if the user cannot click.
 //    textOffset- The location where the text is to appear, relative to the
 //                camera position.
 //    textRotate- The euler angles of the text location.
@@ -112,6 +114,7 @@ var tour = {
                audio: "",
                playWhile: false,
                text: "You're looking at data from the Cassiopeia A supernova. Click anywhere on the screen to orbit the data and see it from all angles.  Clicking will move you along to another stop on the tour.",
+               noClickText: "This is data from the Cassiopeia A supernova. Come along on a little tour.",
                textOffset: {x: 0, y: -0.5, z: -1},
                textRotate: {x: 0, y: 0, z: 0}
               },
@@ -120,6 +123,7 @@ var tour = {
                audio: "", // Should be a CasA overview.
                playWhile: true,
                text: "",
+               noClickText: "First let's look around.",
                textOffset: {x: 0, y: 0, z: -1},
                textRotate: {x: 0, y: 0, z: 0}
               },
@@ -129,12 +133,13 @@ var tour = {
                audio: "",
                playWhile: false,
                text: "Click to tour some of the details.",
+               noClickText: "Let's take a closer look.",
                textOffset: {x: 0, y: 0, z: -1},
                textRotate: {x: 0, y: 0, z: 0}
               },
   
   neutronStar:{dur: "5000",
-               next: "jetsMatter",
+               next: "revShock",
                audio: "NeutronStar",
                playWhile: false,
                text: "Neutron Star: \nAt the center of Cas A is a neutron star, a small \nultra-dense star created by the supernova.",
@@ -142,20 +147,20 @@ var tour = {
                textRotate: {x: 0, y: 0, z: 0}
               },
   
-  jetsMatter: {dur: "5000",
-               next: "revShock",
-               audio: "Jets",
-               playWhile: false,
-               text: "Fiducial Jets: \nIn green, two jets of material are seen. \nThese jets funnel material and energy \nduring and after the explosion.",
-               textOffset: {x: 0, y: 0, z: -1},
-               textRotate: {x: 0, y: 0, z: 0}
-              },
-  
   revShock:   {dur: "5000",
-               next: "FeK",
+               next: "jetsMatter",
                audio: "Acceleration",
                playWhile: false,
                text: "Reverse Shock Sphere: \nThe Cas A supernova remnant acts like a \nrelativistic pinball machine by accelerating \nelectrons to enormous energies. This \narea shows where the acceleration is taking \nplace in an expanding shock wave generated \nby the explosion.",
+               textOffset: {x: 0, y: -0.5, z: -1},
+               textRotate: {x: -45, y: 0, z: 0}
+              },
+  
+  jetsMatter: {dur: "5000",
+               next: "FeK",
+               audio: "Jets",
+               playWhile: false,
+               text: "Fiducial Jets: \nIn green, two jets of material are seen. \nThese jets funnel material and energy \nduring and after the explosion.",
                textOffset: {x: 0, y: 0, z: -1},
                textRotate: {x: 0, y: 0, z: 0}
               },
@@ -191,7 +196,7 @@ var tour = {
                next: "endOfJet",
                audio: "OuterBlastOpt",
                playWhile: false,
-               text: "Outer Knots: \nThe red colored elements of the model represent \nthe outer blast wave of the explosion as seen in \noptical and infrared light, \nmuch of which is silicon.",
+               text: "Outer Knots: \nThe red colored elements of the model \nrepresent the outer blast wave of the explosion \nas seen in optical and infrared light,\n much of which is silicon.",
                textOffset: {x: 0, y: 0, z: -1},
                textRotate: {x: 0, y: 0, z: 0}
               },
@@ -213,6 +218,11 @@ AFRAME.registerComponent('alongpathevent', {
   init: function() {
     this.update.bind(this);
 
+    // Are we viewing on a platform where we can't really click, or a
+    // desktop where we can?
+    var canClick = false;
+
+    
     // Moves us onto the next path on the tour and begins playing.
     var advanceTourSegment = function() {
       
@@ -224,8 +234,6 @@ AFRAME.registerComponent('alongpathevent', {
       var currentPath = alongpath.curve.substring(1);
       var nextPath = tour[currentPath].next;
 
-      console.log("mainCamera", el, alongpath, el.getAttribute("position"));
-      
       // Change the curve, and restart the animation to follow the new
       // curve.  The setAttribute function restarts the animation in
       // some way that simply modifying alongpath.curve does not.
@@ -235,33 +243,39 @@ AFRAME.registerComponent('alongpathevent', {
     };
     
     var clickHandler = function(event) {
-      // TBD: This should stop any audio playing, too.
       
       // First, stop listening for this event.  We'll start listening
       // again after the next segment is completed.
       document.getElementById('mainScene')
         .removeEventListener('click', clickHandler);
 
+      // Advance to the next part of the tour.
       advanceTourSegment();
+
+      // Listen for the end of the next segment of the tour.
+      document.getElementById("mainCamera")
+        .addEventListener('movingended', moveEndHandler);
     };
-    
-    this.el.addEventListener('movingended', function(event) {
 
-      // All we really need to do at the end of a curve is to await
-      // the command to start the next curve.
+    var moveEndHandler = function(event) {
+
+      // Find the name of the path we just finished.
       var mainCamera = document.getElementById("mainCamera");
-
-      document.getElementById('mainScene')
-        .addEventListener('click', clickHandler);
-
-      // What path did we just finish?
       var currentPath = mainCamera.getAttribute("alongpath").curve.substring(1)
-      
+
       // Display the text for the (end of the) path.
       var textHolder = document.getElementById("textHolder");
+
+      // Determine what text to show.  Note that if clicking is not
+      // possible, there might be alternate text to display.
       var textVal = textHolder.getAttribute("text");
       textVal.value = tour[currentPath].text;
+      if (!canClick && tour[currentPath].noClickText) {
+        textVal.value = tour[currentPath].noClickText;
+      };
       textHolder.setAttribute("text", textVal);
+
+      // Now we determine where to display the text.
       var pos = mainCamera.getAttribute("position");
       var textPos = textHolder.getAttribute("position");
       offset = tour[currentPath].textOffset;
@@ -280,47 +294,66 @@ AFRAME.registerComponent('alongpathevent', {
         currentlyPlaying.pause();
       };
 
-      // Play the sound, and set the currently playing pointer.
+      var mainScene = document.getElementById('mainScene');
+
+      // If there is sound, play it and set the "currently playing" pointer.
       if (sound) {
         sound.play();
         currentlyPlaying = sound;
-      };
 
-      // If it's ok to hear the sound while moving, advance the tour.
-      if (tour[currentPath].playWhile) {
-        advanceTourSegment();
+        // Here's the listener for the end-of-sound event.
+        var endedListener = function(event) {
+
+          // If we can't click, pretend we did.
+          if (!canClick) {
+            clickHandler(null);
+          };
+        
+          // Remove this listener.
+          sound.removeEventListener("ended", endedListener);
+        };
+        
+        // Set a listener for the end of the audio.
+        sound.addEventListener("ended", endedListener);
+
+        // If we can click, listen for it. If we can't, the endedListener
+        // will take care of things.
+        if (canClick) {
+          mainScene.addEventListener('click', clickHandler);
+        };
+      } else {
+
+        // There is no sound to play.  If we can click, listen for one.
+        if (canClick) {
+          mainScene.addEventListener('click', clickHandler);
+        } else {
+          // If we can't click, pause (if a pause is specified), then click.
+          var pause = 1000;
+          if (tour[currentPath].pause) pause = tour[currentPath].pause;
+          setTimeout(clickHandler, pause);
+          
+        }
       };
       
-      // When the clip is over, remove this listener.
-      var endedListener = function(event) {
-        sound.removeEventListener("ended", endedListener);
-      };
+      // If it's ok to hear the sound while moving, advance the tour.      
+      // if (tour[currentPath].playWhile) {
+      //   advanceTourSegment();
+      // };
+    }
+      
+    this.el.addEventListener('movingended', moveEndHandler);
 
-      // Set a listener for the end of the audio.  This isn't doing much now.
-      if (sound) {      
-        sound.addEventListener("ended", endedListener);
-      };
-    });
-
-    // We want the first click to interrupt the movement of the camera, but
-    // after that, we want to let each track play to the end.
-    var startListener = function(event) {
-
-//      document.getElementsByTagName('body')[0]
-//        .addEventListener('click', clickHandler);
-
-      document.getElementById("mainCamera")
-        .removeEventListener('movingstarted', startListener);
-    };
-    this.el.addEventListener('movingstarted', startListener);
-
-    // At the moment we are not using the alongpath-trigger-activated
-    // events.  But we log them because we're curious.
-    this.el.addEventListener('alongpath-trigger-activated', function(event) {
-      console.log("trigger event:", event);});
+    // There isn't anything we need to do at the start of motion, but
+    // if there is/was, it should be done in this function.
+    // var startListener = function(event) {
+    //   document.getElementById("mainCamera")
+    //     .removeEventListener('movingstarted', startListener);
+    // };
+    // this.el.addEventListener('movingstarted', startListener);
 
   },
+  
   update: function() {
-    console.log("something happened!");
+    console.log("update called of alongpathevent!");
   }
 });

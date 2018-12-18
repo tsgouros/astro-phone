@@ -55,16 +55,16 @@
         <a-curve-point position="0 8 30"></a-curve-point>
         <a-curve-point position="-3.1 0 -1"></a-curve-point>
       </a-curve>
-      <a-curve id="jetsMatter"> <!-- green -->
-        <a-curve-point position="-3.1 0 -1"></a-curve-point>
-        <a-curve-point position="-21 -20 36.3" class="target"></a-curve-point>
-      </a-curve>
       <a-curve id="revShock"> <!-- pink -->
-        <a-curve-point position="-21 -20 36.3"></a-curve-point>
+        <a-curve-point position="-3.1 0 -1"></a-curve-point>
         <a-curve-point position="12 -11 32" class="target"></a-curve-point>
       </a-curve>
-      <a-curve id="FeK"> <!-- light blue -->
+      <a-curve id="jetsMatter"> <!-- green -->
         <a-curve-point position="12 -11 32"></a-curve-point>
+        <a-curve-point position="-21 -20 36.3" class="target"></a-curve-point>
+      </a-curve>
+      <a-curve id="FeK"> <!-- light blue -->
+        <a-curve-point position="-21 -20 36.3"></a-curve-point>
         <a-curve-point position="-18 24 44" class="target"></a-curve-point>
       </a-curve>
       <a-curve id="arSpitzer"> <!-- yellow -->
@@ -73,14 +73,14 @@
       </a-curve>
       <a-curve id="siChandra"> <!-- dark blue -->
         <a-curve-point position="-18 10 34"></a-curve-point>
-        <a-curve-point position="-9.4 -15.2 45.9" class="target"></a-curve-point>
+        <a-curve-point position="-9.4 -15.2 55.9" class="target"></a-curve-point>
       </a-curve>
       <a-curve id="outerKnots"> <!-- red -->
-        <a-curve-point position="-9.4 -15.2 45.9"></a-curve-point>
-        <a-curve-point position="-51 21 -1" class="target"></a-curve-point>
+        <a-curve-point position="-9.4 -15.2 55.9"></a-curve-point>
+        <a-curve-point position="-9.4 -15.2 45.9" class="target"></a-curve-point>
       </a-curve>
       <a-curve id="endOfJet">
-        <a-curve-point position="-51 21 -1"></a-curve-point>
+        <a-curve-point position="-9.4 -15.2 45.9"></a-curve-point>
         <a-curve-point position="60 25 -15" class="target"></a-curve-point>
       </a-curve>
       <a-curve id="track2">
@@ -127,10 +127,10 @@
                 rotation="0 0 0"
                 look-controls="pointerLockEnabled: true"
                 alongpath="curve: #prepreOrbit; loop: false; dur: 1000;">
-        <a-entity cursor="fuse: false;"
+        <a-entity cursor
                   position="0 0 -1"
                   geometry="primitive: ring; radiusInner: 0.02; radiusOuter: 0.03;"
-                  material="color: #CCC; shader: flat;"></a-entity>
+                  material="color: #CCC; opacity: 0.1; shader: flat;"></a-entity>
       </a-entity>
       <a-entity id="soundPlayer" sound="src: "></a-entity>
       <!-- <a-grid id="ground" 
@@ -191,7 +191,7 @@
       // Load all the sounds and play-then-pause them all, to get them
       // permission to run under the iOS rules.
       var sounds = document.getElementsByTagName('audio');
-      console.log("************", sounds, sounds[0]);
+
       for (i = 0; i < sounds.length; i++) {
         console.log("playing, then pausing:", sounds[i]);
         sounds[i].play(); sounds[i].pause();
