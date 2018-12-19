@@ -164,7 +164,7 @@
     <div id="splash-inner">
       <div class="title">A Look at Cassiopeia A</div>
       <div class="sub-title">Little Star, Big Mess</div>
-      <div id="go-button" onclick="pressStart()">Start</div>
+      <div id="go-button" onclick="pressStart()" style="display: none;">Start</div>
       <!--<div id="go-button-silent" onclick="pressSilentStart()">(Silent)</div>-->
       <div class="sub-title">Created By</div>
       <br />
@@ -180,6 +180,7 @@
     document.getElementById("mainScene").addEventListener("loaded",
       function() {
         document.getElementById('mainCamera').pause();
+        document.getElementById("go-button").style.display = "flex";
     });
     
     pressStart = function() {
