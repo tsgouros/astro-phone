@@ -132,31 +132,30 @@
                   geometry="primitive: ring; radiusInner: 0.02; radiusOuter: 0.03;"
                   material="color: #CCC; opacity: 0.1; shader: flat;"></a-entity>
       </a-entity>
-      <a-entity id="soundPlayer" sound="src: "></a-entity>
       <!-- <a-grid id="ground" 
                    material="src:../grid-cell.png; 
                    opacity:0.9"></a-grid> -->
   </a-scene>
   <div id="sound-streams">
-    <audio id="Acceleration">
+    <audio id="Acceleration" preload="auto">
       <source src="data/Acceleration_AJ.WAV" type="audio/wav"></source>
     </audio>
-    <audio id="Infrared">
+    <audio id="Infrared" preload="auto">
       <source src="data/Infrared_AJ.WAV" type="audio/wav"></source>
     </audio>
-    <audio id="Iron">
+    <audio id="Iron" preload="auto">
       <source src="data/Iron_Xray_AJ.WAV" type="audio/wav"></source>
     </audio>
-    <audio id="Jets">
+    <audio id="Jets" preload="auto">
       <source src="data/Jets_AJ.WAV" type="audio/wav"></source>
     </audio>
-    <audio id="NeutronStar">
+    <audio id="NeutronStar" preload="auto">
       <source src="data/NeutronStar_AJ.WAV" type="audio/wav"></source>
     </audio>
-    <audio id="OuterBlastOpt">
+    <audio id="OuterBlastOpt" preload="auto">
       <source src="data/OuterBlast_Opt_IR_AJ.WAV" type="audio/wav"></source>
     </audio>
-    <audio id="OuterBlastXray">
+    <audio id="OuterBlastXray" preload="auto">
       <source src="data/OuterBlast_Xray_AJ.WAV" type="audio/wav"></source>
     </audio>
   </div>
@@ -166,7 +165,7 @@
       <div class="sub-title">Little Star, Big Mess</div>
       <div id="go-button" onclick="pressStart()" style="display: none;">Start</div>
       <!--<div id="go-button-silent" onclick="pressSilentStart()">(Silent)</div>-->
-      <div class="sub-title">VR: NASA, Chandra, <br> SAO & Brown CS</div>
+      <div class="sub-title">VR by NASA, Chandra, <br> SAO & Brown CS</div>
       <br />
     </div>
   </div>

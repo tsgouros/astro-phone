@@ -226,7 +226,7 @@ AFRAME.registerComponent('alongpathevent', {
     // desktop where we can?
     var canClick = !AFRAME.utils.device.isMobile();
     //console.log("isMobile()?:", AFRAME.utils.device.isMobile());
-    canClick = false;
+    //canClick = false;
     
     // Moves us onto the next path on the tour and begins playing.
     var advanceTourSegment = function() {
